@@ -22,18 +22,46 @@ This program is available under Apache License Version 2.0, available at https:/
         display: none !important;
       }
     </style>
-    <slot></slot>
+    <vaadin-custom-field id="customField" on-value-changed="_customFieldValueChangedBound">
+      <slot name="date-picker">
+        <vaadin-date-picker part="date"></vaadin-date-picker>
+      </slot>
+      <slot name="time-picker">
+        <vaadin-time-picker part="time"></vaadin-time-picker>
+      </slot>
+    </vaadin-custom-field>
   </template>
 
   <script>
     (function() {
 
+      /* eslint-disable max-len */
       /**
-       * `<vaadin-date-time-picker>` is a Web Component.
+       * `<vaadin-date-time-picker>` is a Web Component providing a date time selection field.
        *
-       * ```
+       * ```html
        * <vaadin-date-time-picker></vaadin-date-time-picker>
        * ```
+       *
+       * When the selected `value` is changed, a `value-changed` event is triggered.
+       *
+       * ### Styling
+       *
+       * In addition to `<vaadin-date-time-picker>` itself, the following internal
+       * components are themable:
+       *
+       * - `<vaadin-custom-field>`, see
+       *   [`<vaadin-custom-field>` documentation](https://vaadin.com/components/vaadin-custom-field/html-api/elements/Vaadin.CustomFieldElement)
+       *   for the custom field parts.
+       * - `<vaadin-date-picker>`, see
+       *   [`<vaadin-date-picker>` documentation](https://vaadin.com/components/vaadin-date-picker/html-api/elements/Vaadin.DatePickerElement)
+       *   for the date picker parts.
+       * - `<vaadin-time-picker>`, see
+       *   [`<vaadin-time-picker>` documentation](https://vaadin.com/components/vaadin-time-picker/html-api/elements/Vaadin.TimePickerElement)
+       *   for the time picker parts.
+       *
+       * Note: the `theme` attribute value set on `<vaadin-date-time-picker>` is
+       * propagated to the internal themable components listed above.
        *
        * @memberof Vaadin
        * @mixes Vaadin.ElementMixin
@@ -41,6 +69,7 @@ This program is available under Apache License Version 2.0, available at https:/
        * @demo demo/index.html
        */
       class DateTimePicker extends Vaadin.ElementMixin(Vaadin.ThemableMixin(Polymer.Element)) {
+        /* eslint-enable max-len */
         static get is() {
           return 'vaadin-date-time-picker';
         }
@@ -50,7 +79,170 @@ This program is available under Apache License Version 2.0, available at https:/
 
         static get properties() {
           return {
+            /**
+             * The value for this element.
+             *
+             * Supported date time format is based on ISO 8601 (without a time zone designator):
+             * - Minute precision `"YYYY-MM-DDThh:mm"`
+             * - Second precision `"YYYY-MM-DDThh:mm:ss"`
+             * - Millisecond precision `"YYYY-MM-DDThh:mm:ss.fff"` (default)
+             */
+            value: {
+              type: String,
+              notify: true,
+              value: '',
+              observer: '_valueChanged'
+            },
+
+            /**
+             * The current selected date time.
+             */
+            _selectedDateTime: {
+              type: Date
+            },
           };
+        }
+
+        static get observers() {
+          return [
+            '_selectedDateTimeChanged(_selectedDateTime)'
+          ];
+        }
+
+        constructor() {
+          super();
+
+          this._customFieldValueChangedBound = this._customFieldValueChanged.bind(this);
+        }
+
+        ready() {
+          super.ready();
+
+          this.$.customField.i18n.parseValue = combinedValue => combinedValue.split('T');
+          this.$.customField.i18n.formatValue = inputValues => inputValues.join('T');
+        }
+
+        get _datePicker() {
+          return this.$.customField.inputs[0];
+        }
+
+        get _timePicker() {
+          return this.$.customField.inputs[1];
+        }
+
+        _parseDate(str) {
+          return customElements.get('vaadin-date-picker').prototype._parseDate(str);
+        }
+
+        _formatDateISO(str) {
+          return customElements.get('vaadin-date-picker').prototype._formatISO(str);
+        }
+
+        __formatTimeISO(time) {
+          return customElements.get('vaadin-time-picker').properties.i18n.value().formatTime(time);
+        }
+
+        __parseTimeISO(str) {
+          return customElements.get('vaadin-time-picker').properties.i18n.value().parseTime(str);
+        }
+
+        _parseDateTime(str) {
+          const [dateValue, timeValue] = str.split('T');
+          if (!(dateValue && timeValue)) {
+            return;
+          }
+
+          /** @type {Date} */
+          const date = this._parseDate(dateValue);
+          if (!date) {
+            return;
+          }
+
+          const time = this.__parseTimeISO(timeValue);
+          if (!time) {
+            return;
+          }
+
+          date.setHours(parseInt(time.hours));
+          date.setMinutes(parseInt(time.minutes || 0));
+          date.setSeconds(parseInt(time.seconds || 0));
+          date.setMilliseconds(parseInt(time.milliseconds || 0));
+
+          return date;
+        }
+
+        /**
+         * @param {Date} date1
+         * @param {Date} date2
+         */
+        _dateTimeEquals(date1, date2) {
+          if (!Vaadin.DatePickerHelper._dateEquals(date1, date2)) {
+            return false;
+          }
+          return date1.getHours() === date2.getHours() &&
+          date1.getMinutes() === date2.getMinutes() &&
+          date1.getSeconds() === date2.getSeconds() &&
+          date1.getMilliseconds() === date2.getMilliseconds();
+        }
+
+        _handleDateTimeChange(property, parsedProperty, value, oldValue) {
+          if (!value) {
+            this[property] = '';
+            return;
+          }
+
+          const dateTime = this._parseDateTime(value);
+          if (!dateTime) { // Invalid date, revert to old value
+            this[property] = oldValue;
+            return;
+          }
+          if (!this._dateTimeEquals(this[parsedProperty], dateTime)) {
+            this[parsedProperty] = dateTime;
+          }
+        }
+
+        _valueChanged(value, oldValue) {
+          // Setting initial value to empty string, skip
+          if (value === '' && oldValue === undefined) {
+            return;
+          }
+
+          this._handleDateTimeChange('value', '_selectedDateTime', value, oldValue);
+        }
+
+        _selectedDateTimeChanged(selectedDateTime) {
+          if (!selectedDateTime === undefined) {
+            return;
+          }
+
+          const dateValue = this._formatDateISO(selectedDateTime);
+          const timeValue = this.__formatTimeISO({
+            hours: selectedDateTime.getHours(),
+            minutes: selectedDateTime.getMinutes(),
+            seconds: selectedDateTime.getSeconds(),
+            milliseconds: selectedDateTime.getMilliseconds()
+          });
+
+          const formattedValue = `${dateValue}T${timeValue}`;
+          if (this.value !== formattedValue) {
+            this.value = formattedValue;
+          }
+
+          this._datePicker.value = dateValue;
+          this._timePicker.value = timeValue;
+        }
+
+        _customFieldValueChanged(e) {
+          const value = e.detail.value;
+          if (typeof value !== 'string') {
+            return;
+          }
+          const [date, time] = value.split('T');
+          if (date && time) {
+            this.value = value;
+          } else {
+            this.value = '';
+          }
         }
       }
 
