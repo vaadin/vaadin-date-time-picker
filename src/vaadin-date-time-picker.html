@@ -22,7 +22,7 @@ This program is available under Apache License Version 2.0, available at https:/
         display: none !important;
       }
     </style>
-    <vaadin-custom-field id="customField" on-value-changed="_customFieldValueChanged">
+    <vaadin-custom-field id="customField" on-value-changed="__customFieldValueChanged">
       <slot name="date-picker">
         <vaadin-date-picker part="date"></vaadin-date-picker>
       </slot>
@@ -91,13 +91,13 @@ This program is available under Apache License Version 2.0, available at https:/
               type: String,
               notify: true,
               value: '',
-              observer: '_valueChanged'
+              observer: '__valueChanged'
             },
 
             /**
              * The current selected date time.
              */
-            _selectedDateTime: {
+            __selectedDateTime: {
               type: Date
             },
           };
@@ -105,7 +105,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
         static get observers() {
           return [
-            '_selectedDateTimeChanged(_selectedDateTime)'
+            '__selectedDateTimeChanged(__selectedDateTime)'
           ];
         }
 
@@ -116,19 +116,19 @@ This program is available under Apache License Version 2.0, available at https:/
           this.$.customField.i18n.formatValue = inputValues => inputValues.join('T');
         }
 
-        get _datePicker() {
+        get __datePicker() {
           return this.$.customField.inputs[0];
         }
 
-        get _timePicker() {
+        get __timePicker() {
           return this.$.customField.inputs[1];
         }
 
-        _parseDate(str) {
+        __parseDate(str) {
           return customElements.get('vaadin-date-picker').prototype._parseDate(str);
         }
 
-        _formatDateISO(str) {
+        __formatDateISO(str) {
           return customElements.get('vaadin-date-picker').prototype._formatISO(str);
         }
 
@@ -140,14 +140,14 @@ This program is available under Apache License Version 2.0, available at https:/
           return customElements.get('vaadin-time-picker').properties.i18n.value().parseTime(str);
         }
 
-        _parseDateTime(str) {
+        __parseDateTime(str) {
           const [dateValue, timeValue] = str.split('T');
           if (!(dateValue && timeValue)) {
             return;
           }
 
           /** @type {Date} */
-          const date = this._parseDate(dateValue);
+          const date = this.__parseDate(dateValue);
           if (!date) {
             return;
           }
@@ -169,7 +169,7 @@ This program is available under Apache License Version 2.0, available at https:/
          * @param {Date} date1
          * @param {Date} date2
          */
-        _dateTimeEquals(date1, date2) {
+        __dateTimeEquals(date1, date2) {
           if (!Vaadin.DatePickerHelper._dateEquals(date1, date2)) {
             return false;
           }
@@ -179,30 +179,30 @@ This program is available under Apache License Version 2.0, available at https:/
           date1.getMilliseconds() === date2.getMilliseconds();
         }
 
-        _handleDateTimeChange(property, parsedProperty, value, oldValue) {
+        __handleDateTimeChange(property, parsedProperty, value, oldValue) {
           if (!value) {
             this[property] = '';
             this[parsedProperty] = '';
             return;
           }
 
-          const dateTime = this._parseDateTime(value);
+          const dateTime = this.__parseDateTime(value);
           if (!dateTime) { // Invalid date, revert to old value
             this[property] = oldValue;
             return;
           }
-          if (!this._dateTimeEquals(this[parsedProperty], dateTime)) {
+          if (!this.__dateTimeEquals(this[parsedProperty], dateTime)) {
             this[parsedProperty] = dateTime;
           }
         }
 
-        _valueChanged(value, oldValue) {
+        __valueChanged(value, oldValue) {
           // Setting initial value to empty string, skip
           if (value === '' && oldValue === undefined) {
             return;
           }
 
-          this._handleDateTimeChange('value', '_selectedDateTime', value, oldValue);
+          this.__handleDateTimeChange('value', '__selectedDateTime', value, oldValue);
         }
 
         /**
@@ -212,7 +212,7 @@ This program is available under Apache License Version 2.0, available at https:/
          * @param {string} date1
          * @param {string} date2
          */
-        _dateTimeStringEquals(date1, date2) {
+        __dateTimeStringEquals(date1, date2) {
           if (date1.length === date2.length) {
             return date1 === date2;
           }
@@ -239,12 +239,12 @@ This program is available under Apache License Version 2.0, available at https:/
           return okEndDiffs.indexOf(endDiff) !== -1;
         }
 
-        _selectedDateTimeChanged(selectedDateTime) {
+        __selectedDateTimeChanged(selectedDateTime) {
           if (!selectedDateTime === undefined) {
             return;
           }
 
-          const dateValue = this._formatDateISO(selectedDateTime);
+          const dateValue = this.__formatDateISO(selectedDateTime);
           // FIXME(haprog): Once we add support for "step" property, timeValue should take that into account
           // and use correct precision (like in vaadin-time-picker)
           const timeValue = (selectedDateTime && this.__formatTimeISO({
@@ -255,15 +255,15 @@ This program is available under Apache License Version 2.0, available at https:/
           })) || '';
 
           const formattedValue = `${dateValue}T${timeValue}`;
-          if (!this._dateTimeStringEquals(this.value, formattedValue)) {
+          if (!this.__dateTimeStringEquals(this.value, formattedValue)) {
             this.value = formattedValue;
           }
 
-          this._datePicker.value = dateValue;
-          this._timePicker.value = timeValue;
+          this.__datePicker.value = dateValue;
+          this.__timePicker.value = timeValue;
         }
 
-        _customFieldValueChanged(e) {
+        __customFieldValueChanged(e) {
           /** @type {string} */
           const value = e.detail.value;
           if (typeof value !== 'string') {
