@@ -210,12 +210,48 @@ This program is available under Apache License Version 2.0, available at https:/
           this._handleDateTimeChange('value', '_selectedDateTime', value, oldValue);
         }
 
+        /**
+         * FIXME(haprog): This method can probably be removed once we support "step" property
+         * and know what the precision of the date string should be.
+         *
+         * @param {string} date1
+         * @param {string} date2
+         */
+        _dateTimeStringEquals(date1, date2) {
+          if (date1.length === date2.length) {
+            return date1 === date2;
+          }
+
+          let shortDate, longDate;
+          if (date1.length > date2.length) {
+            shortDate = date2;
+            longDate = date1;
+          } else {
+            shortDate = date1;
+            longDate = date2;
+          }
+
+          if (shortDate !== longDate.substr(0, shortDate.length)) {
+            return false;
+          }
+
+          const endDiff = longDate.substr(shortDate.length);
+          const okEndDiffs = [
+            ':00.000',
+            ':00',
+            '.000'
+          ];
+          return okEndDiffs.indexOf(endDiff) !== -1;
+        }
+
         _selectedDateTimeChanged(selectedDateTime) {
           if (!selectedDateTime === undefined) {
             return;
           }
 
           const dateValue = this._formatDateISO(selectedDateTime);
+          // FIXME(haprog): Once we add support for "step" property, timeValue should take that into account
+          // and use correct precision (like in vaadin-time-picker)
           const timeValue = this.__formatTimeISO({
             hours: selectedDateTime.getHours(),
             minutes: selectedDateTime.getMinutes(),
@@ -224,7 +260,7 @@ This program is available under Apache License Version 2.0, available at https:/
           });
 
           const formattedValue = `${dateValue}T${timeValue}`;
-          if (this.value !== formattedValue) {
+          if (!this._dateTimeStringEquals(this.value, formattedValue)) {
             this.value = formattedValue;
           }
 
@@ -233,6 +269,7 @@ This program is available under Apache License Version 2.0, available at https:/
         }
 
         _customFieldValueChanged(e) {
+          /** @type {string} */
           const value = e.detail.value;
           if (typeof value !== 'string') {
             return;
