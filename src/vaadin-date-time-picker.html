@@ -188,6 +188,7 @@ This program is available under Apache License Version 2.0, available at https:/
         _handleDateTimeChange(property, parsedProperty, value, oldValue) {
           if (!value) {
             this[property] = '';
+            this[parsedProperty] = '';
             return;
           }
 
@@ -252,12 +253,12 @@ This program is available under Apache License Version 2.0, available at https:/
           const dateValue = this._formatDateISO(selectedDateTime);
           // FIXME(haprog): Once we add support for "step" property, timeValue should take that into account
           // and use correct precision (like in vaadin-time-picker)
-          const timeValue = this.__formatTimeISO({
+          const timeValue = (selectedDateTime && this.__formatTimeISO({
             hours: selectedDateTime.getHours(),
             minutes: selectedDateTime.getMinutes(),
             seconds: selectedDateTime.getSeconds(),
             milliseconds: selectedDateTime.getMilliseconds()
-          });
+          })) || '';
 
           const formattedValue = `${dateValue}T${timeValue}`;
           if (!this._dateTimeStringEquals(this.value, formattedValue)) {
