@@ -18,10 +18,16 @@
 
   <script>
     describe('Basic features', () => {
-      var dateTimePicker;
+      let dateTimePicker;
+      let customField;
+      let datePicker;
+      let timePicker;
 
       beforeEach(() => {
         dateTimePicker = fixture('default');
+        customField = dateTimePicker.$.customField;
+        datePicker = customField.inputs[0];
+        timePicker = customField.inputs[1];
       });
 
       it('should not expose class name globally', () => {
@@ -41,6 +47,13 @@
         dateTimePicker.addEventListener('value-changed', spy);
         dateTimePicker.value = '2019-09-19T08:26';
         expect(spy).to.have.been.calledOnce;
+      });
+
+      it('should get value from custom field', () => {
+        datePicker.value = '2019-09-19';
+        timePicker.value = '15:00';
+        customField.__setValue();
+        expect(dateTimePicker.value).to.equal('2019-09-19T15:00');
       });
 
       describe('value property formats', () => {

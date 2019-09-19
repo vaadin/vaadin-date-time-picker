@@ -112,16 +112,10 @@ This program is available under Apache License Version 2.0, available at https:/
         ready() {
           super.ready();
 
+          /* istanbul ignore next */
           this.$.customField.i18n.parseValue = combinedValue => combinedValue.split('T');
+          /* istanbul ignore next */
           this.$.customField.i18n.formatValue = inputValues => inputValues.join('T');
-        }
-
-        get __datePicker() {
-          return this.$.customField.inputs[0];
-        }
-
-        get __timePicker() {
-          return this.$.customField.inputs[1];
         }
 
         __parseDate(str) {
@@ -218,12 +212,13 @@ This program is available under Apache License Version 2.0, available at https:/
           }
 
           let shortDate, longDate;
-          if (date1.length > date2.length) {
-            shortDate = date2;
-            longDate = date1;
-          } else {
+          /* istanbul ignore else */
+          if (date1.length < date2.length) {
             shortDate = date1;
             longDate = date2;
+          } else {
+            shortDate = date2;
+            longDate = date1;
           }
 
           if (shortDate !== longDate.substr(0, shortDate.length)) {
@@ -240,6 +235,7 @@ This program is available under Apache License Version 2.0, available at https:/
         }
 
         __selectedDateTimeChanged(selectedDateTime) {
+          /* istanbul ignore if */
           if (!selectedDateTime === undefined) {
             return;
           }
@@ -259,19 +255,21 @@ This program is available under Apache License Version 2.0, available at https:/
             this.value = formattedValue;
           }
 
-          this.__datePicker.value = dateValue;
-          this.__timePicker.value = timeValue;
+          this.$.customField.value = formattedValue;
         }
 
         __customFieldValueChanged(e) {
           /** @type {string} */
           const value = e.detail.value;
+          /* istanbul ignore if */
           if (typeof value !== 'string') {
             return;
           }
           const [date, time] = value.split('T');
           if (date && time) {
-            this.value = value;
+            if (!this.__dateTimeStringEquals(this.value, value)) {
+              this.value = value;
+            }
           } else {
             this.value = '';
           }
