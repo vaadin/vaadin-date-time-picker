@@ -22,7 +22,7 @@ This program is available under Apache License Version 2.0, available at https:/
         display: none !important;
       }
     </style>
-    <vaadin-custom-field id="customField" on-value-changed="_customFieldValueChangedBound">
+    <vaadin-custom-field id="customField" on-value-changed="_customFieldValueChanged">
       <slot name="date-picker">
         <vaadin-date-picker part="date"></vaadin-date-picker>
       </slot>
@@ -107,12 +107,6 @@ This program is available under Apache License Version 2.0, available at https:/
           return [
             '_selectedDateTimeChanged(_selectedDateTime)'
           ];
-        }
-
-        constructor() {
-          super();
-
-          this._customFieldValueChangedBound = this._customFieldValueChanged.bind(this);
         }
 
         ready() {
