@@ -22,6 +22,12 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="theme-attribute">
+    <template>
+      <vaadin-date-time-picker theme="foo"></vaadin-date-time-picker>
+    </template>
+  </test-fixture>
+
   <script>
     describe('Basic features', () => {
       let dateTimePicker;
@@ -60,22 +66,6 @@
         timePicker.value = '15:00';
         customField.__setValue();
         expect(dateTimePicker.value).to.equal('2019-09-19T15:00');
-      });
-
-      describe('initial value', () => {
-
-        beforeEach(() => {
-          dateTimePicker = fixture('initial-value');
-          customField = dateTimePicker.$.customField;
-          datePicker = customField.inputs[0];
-          timePicker = customField.inputs[1];
-        });
-
-        it('should use initial value from attribute without clearing it', () => {
-          expect(dateTimePicker.value).to.equal('2019-09-16T15:00');
-          expect(customField.value).to.equal('2019-09-16T15:00:00.000');
-        });
-
       });
 
       describe('value property formats', () => {
@@ -128,6 +118,49 @@
           expect(dateTimePicker.value).to.equal('-010000-02-03T08:30:00.000');
         });
 
+      });
+
+    });
+
+    describe('Initial value', () => {
+      let dateTimePicker;
+      let customField;
+
+      beforeEach(() => {
+        dateTimePicker = fixture('initial-value');
+        customField = dateTimePicker.$.customField;
+      });
+
+      it('should use initial value from attribute without clearing it', () => {
+        expect(dateTimePicker.value).to.equal('2019-09-16T15:00');
+        expect(customField.value).to.equal('2019-09-16T15:00:00.000');
+      });
+
+    });
+
+    describe('Theme attribute', () => {
+      let dateTimePicker;
+      let customField;
+      let datePicker;
+      let timePicker;
+
+      beforeEach(() => {
+        dateTimePicker = fixture('theme-attribute');
+        customField = dateTimePicker.$.customField;
+        datePicker = customField.inputs[0];
+        timePicker = customField.inputs[1];
+      });
+
+      it('should propagate theme attribute to custom-field', () => {
+        expect(customField.getAttribute('theme')).to.equal('foo');
+      });
+
+      it('should propagate theme attribute to date-picker', () => {
+        expect(datePicker.getAttribute('theme')).to.equal('foo');
+      });
+
+      it('should propagate theme attribute to time-picker', () => {
+        expect(timePicker.getAttribute('theme')).to.equal('foo');
       });
 
     });

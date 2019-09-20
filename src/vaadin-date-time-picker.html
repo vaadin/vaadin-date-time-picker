@@ -22,12 +22,12 @@ This program is available under Apache License Version 2.0, available at https:/
         display: none !important;
       }
     </style>
-    <vaadin-custom-field id="customField" on-value-changed="__customFieldValueChanged">
+    <vaadin-custom-field id="customField" on-value-changed="__customFieldValueChanged" theme$="[[theme]]">
       <slot name="date-picker">
-        <vaadin-date-picker part="date"></vaadin-date-picker>
+        <vaadin-date-picker part="date" theme$="[[theme]]"></vaadin-date-picker>
       </slot>
       <slot name="time-picker">
-        <vaadin-time-picker part="time"></vaadin-time-picker>
+        <vaadin-time-picker part="time" theme$="[[theme]]"></vaadin-time-picker>
       </slot>
     </vaadin-custom-field>
   </template>
@@ -40,12 +40,25 @@ This program is available under Apache License Version 2.0, available at https:/
        * `<vaadin-date-time-picker>` is a Web Component providing a date time selection field.
        *
        * ```html
-       * <vaadin-date-time-picker></vaadin-date-time-picker>
+       * <vaadin-date-time-picker value="2019-09-16T15:00"></vaadin-date-time-picker>
+       * ```
+       *
+       * ```js
+       * dateTimePicker.value = '2019-09-16T15:00';
        * ```
        *
        * When the selected `value` is changed, a `value-changed` event is triggered.
        *
        * ### Styling
+       *
+       * The following shadow DOM parts are available for styling:
+       *
+       * Part name | Description | Theme for Element
+       * ----------------|----------------|----------------
+       * `date` | Date picker element | vaadin-date-time-picker
+       * `time` | Time picker element | vaadin-date-time-picker
+       *
+       * See [ThemableMixin – Stylable Shadow Parts](https://github.com/vaadin/vaadin-themable-mixin#stylable-shadow-parts)
        *
        * In addition to `<vaadin-date-time-picker>` itself, the following internal
        * components are themable:
@@ -66,6 +79,7 @@ This program is available under Apache License Version 2.0, available at https:/
        * @memberof Vaadin
        * @mixes Vaadin.ElementMixin
        * @mixes Vaadin.ThemableMixin
+       * @mixes Vaadin.ThemePropertyMixin
        * @demo demo/index.html
        */
       class DateTimePicker extends Vaadin.ElementMixin(Vaadin.ThemableMixin(Polymer.Element)) {
