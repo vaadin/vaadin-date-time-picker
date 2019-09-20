@@ -109,15 +109,6 @@ This program is available under Apache License Version 2.0, available at https:/
           ];
         }
 
-        ready() {
-          super.ready();
-
-          /* istanbul ignore next */
-          this.$.customField.i18n.parseValue = combinedValue => combinedValue.split('T');
-          /* istanbul ignore next */
-          this.$.customField.i18n.formatValue = inputValues => inputValues.join('T');
-        }
-
         __parseDate(str) {
           return customElements.get('vaadin-date-picker').prototype._parseDate(str);
         }
@@ -265,6 +256,18 @@ This program is available under Apache License Version 2.0, available at https:/
           if (typeof value !== 'string') {
             return;
           }
+
+          // Initial empty value ('\t') from custom field
+          if (value === '\t') {
+            // Set value format for custom field
+            /* istanbul ignore next */
+            this.$.customField.set('i18n.parseValue', combinedValue => combinedValue.split('T'));
+            /* istanbul ignore next */
+            this.$.customField.set('i18n.formatValue', inputValues => inputValues.join('T'));
+            // Ignore initial value from custom field so we don't override initial value of date time picker
+            return;
+          }
+
           const [date, time] = value.split('T');
           if (date && time) {
             if (!this.__dateTimeStringEquals(this.value, value)) {

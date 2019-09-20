@@ -16,6 +16,12 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="initial-value">
+    <template>
+      <vaadin-date-time-picker value="2019-09-16T15:00"></vaadin-date-time-picker>
+    </template>
+  </test-fixture>
+
   <script>
     describe('Basic features', () => {
       let dateTimePicker;
@@ -54,6 +60,22 @@
         timePicker.value = '15:00';
         customField.__setValue();
         expect(dateTimePicker.value).to.equal('2019-09-19T15:00');
+      });
+
+      describe('initial value', () => {
+
+        beforeEach(() => {
+          dateTimePicker = fixture('initial-value');
+          customField = dateTimePicker.$.customField;
+          datePicker = customField.inputs[0];
+          timePicker = customField.inputs[1];
+        });
+
+        it('should use initial value from attribute without clearing it', () => {
+          expect(dateTimePicker.value).to.equal('2019-09-16T15:00');
+          expect(customField.value).to.equal('2019-09-16T15:00:00.000');
+        });
+
       });
 
       describe('value property formats', () => {
@@ -105,6 +127,7 @@
           dateTimePicker.__selectedDateTime = new Date(date.getTime());
           expect(dateTimePicker.value).to.equal('-010000-02-03T08:30:00.000');
         });
+
       });
 
     });
