@@ -35,7 +35,6 @@ This program is available under Apache License Version 2.0, available at https:/
   <script>
     (function() {
 
-      /* eslint-disable max-len */
       /**
        * `<vaadin-date-time-picker>` is a Web Component providing a date time selection field.
        *
@@ -64,13 +63,13 @@ This program is available under Apache License Version 2.0, available at https:/
        * components are themable:
        *
        * - `<vaadin-custom-field>`, see
-       *   [`<vaadin-custom-field>` documentation](https://vaadin.com/components/vaadin-custom-field/html-api/elements/Vaadin.CustomFieldElement)
+       *   [`custom-field` documentation](https://vaadin.com/components/vaadin-custom-field/html-api/elements/Vaadin.CustomFieldElement)
        *   for the custom field parts.
        * - `<vaadin-date-picker>`, see
-       *   [`<vaadin-date-picker>` documentation](https://vaadin.com/components/vaadin-date-picker/html-api/elements/Vaadin.DatePickerElement)
+       *   [`date-picker` documentation](https://vaadin.com/components/vaadin-date-picker/html-api/elements/Vaadin.DatePickerElement)
        *   for the date picker parts.
        * - `<vaadin-time-picker>`, see
-       *   [`<vaadin-time-picker>` documentation](https://vaadin.com/components/vaadin-time-picker/html-api/elements/Vaadin.TimePickerElement)
+       *   [`time-picker` documentation](https://vaadin.com/components/vaadin-time-picker/html-api/elements/Vaadin.TimePickerElement)
        *   for the time picker parts.
        *
        * Note: the `theme` attribute value set on `<vaadin-date-time-picker>` is
@@ -83,7 +82,6 @@ This program is available under Apache License Version 2.0, available at https:/
        * @demo demo/index.html
        */
       class DateTimePicker extends Vaadin.ElementMixin(Vaadin.ThemableMixin(Polymer.Element)) {
-        /* eslint-enable max-len */
         static get is() {
           return 'vaadin-date-time-picker';
         }
