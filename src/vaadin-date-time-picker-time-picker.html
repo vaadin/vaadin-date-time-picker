@@ -1,0 +1,54 @@
+<!--
+@license
+Copyright (c) 2019 Vaadin Ltd.
+This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+-->
+
+<link rel="import" href="../../vaadin-time-picker/src/vaadin-time-picker.html">
+<link rel="import" href="vaadin-date-time-picker-time-text-field.html">
+<link rel="import" href="vaadin-date-time-picker-helper.html">
+
+<script>
+  (function() {
+    let memoizedTemplate;
+
+    /**
+      * The time-picker element.
+      *
+      * ### Styling
+      *
+      * See [`<vaadin-time-picker>` documentation](https://github.com/vaadin/vaadin-time-picker/blob/master/src/vaadin-time-picker.html)
+      * for `<vaadin-date-time-picker-time-picker>` parts and available slots (prefix, suffix etc.)
+      *
+      * See [ThemableMixin – how to apply styles for shadow parts](https://github.com/vaadin/vaadin-themable-mixin/wiki)
+      *
+      * @memberof Vaadin
+      * @extends Vaadin.TimePickerElement
+      */
+    class DateTimePickerTimePickerElement extends Vaadin.TimePickerElement {
+      static get is() {
+        return 'vaadin-date-time-picker-time-picker';
+      }
+
+      static get template() {
+        if (!memoizedTemplate) {
+          memoizedTemplate = super.template.cloneNode(true);
+
+          memoizedTemplate.innerHTML = Vaadin.DateTimePickerHelper.replaceTagNames(
+            memoizedTemplate.innerHTML,
+            'vaadin-time-picker-text-field',
+            'vaadin-date-time-picker-time-text-field'
+          );
+        }
+        return memoizedTemplate;
+      }
+
+      // Overridden only for fixing the tag name used in the querySelector
+      get __inputElement() {
+        return this.__memoInput || (this.__memoInput = this.shadowRoot.querySelector('vaadin-date-time-picker-time-text-field'));
+      }
+    }
+
+    customElements.define(DateTimePickerTimePickerElement.is, DateTimePickerTimePickerElement);
+  })();
+</script>
