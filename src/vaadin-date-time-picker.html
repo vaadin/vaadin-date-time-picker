@@ -18,10 +18,6 @@ This program is available under Apache License Version 2.0, available at https:/
       .container {
         width: 100%;
       }
-
-      .inputs-wrapper {
-        display: flex;
-      }
     </style>
   </template>
 </dom-module>
@@ -37,14 +33,18 @@ This program is available under Apache License Version 2.0, available at https:/
         display: none !important;
       }
 
+      .slot-container {
+        display: flex;
+      }
+
       [part="date"],
-      slot[name="date-picker"]::slotted(*) {
+      .slot-container ::slotted([slot="date-picker"]) {
         min-width: 0;
         flex: 1 1 auto;
       }
 
       [part="time"],
-      slot[name="time-picker"]::slotted(*) {
+      .slot-container ::slotted([slot="time-picker"]) {
         min-width: 0;
         flex: 1 1.65 auto;
       }
@@ -55,12 +55,14 @@ This program is available under Apache License Version 2.0, available at https:/
         i18n="[[__customFieldValueFormat]]"
         theme$="[[theme]]"
       >
-      <slot name="date-picker">
-        <vaadin-date-time-picker-date-picker part="date" theme$="[[theme]]"></vaadin-date-time-picker-date-picker>
-      </slot>
-      <slot name="time-picker">
-        <vaadin-date-time-picker-time-picker part="time" theme$="[[theme]]"></vaadin-date-time-picker-time-picker>
-      </slot>
+      <div class="slot-container">
+        <slot name="date-picker">
+          <vaadin-date-time-picker-date-picker part="date" theme$="[[theme]]"></vaadin-date-time-picker-date-picker>
+        </slot>
+        <slot name="time-picker">
+          <vaadin-date-time-picker-time-picker part="time" theme$="[[theme]]"></vaadin-date-time-picker-time-picker>
+        </slot>
+      </div>
     </vaadin-date-time-picker-custom-field>
   </template>
 
