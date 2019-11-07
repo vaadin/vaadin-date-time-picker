@@ -261,7 +261,7 @@ This program is available under Apache License Version 2.0, available at https:/
         __datePickerChanged() {
           const defaultDatePicker = this.shadowRoot.querySelector('[part="date"]');
           const assignedElements = this.$.dateSlot.assignedNodes({flatten: true}).filter(this.__filterElements);
-          const datePicker = assignedElements[0] || defaultDatePicker;
+          const datePicker = assignedElements[0];
           if (this.__datePicker === datePicker) {
             return;
           }
@@ -287,7 +287,7 @@ This program is available under Apache License Version 2.0, available at https:/
         __timePickerChanged() {
           const defaultTimePicker = this.shadowRoot.querySelector('[part="time"]');
           const assignedElements = this.$.timeSlot.assignedNodes({flatten: true}).filter(this.__filterElements);
-          const timePicker = assignedElements[0] || defaultTimePicker;
+          const timePicker = assignedElements[0];
           if (this.__timePicker === timePicker) {
             return;
           }
