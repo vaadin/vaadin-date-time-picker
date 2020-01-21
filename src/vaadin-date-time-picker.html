@@ -66,10 +66,10 @@ This program is available under Apache License Version 2.0, available at https:/
       >
       <div class="slot-container">
         <slot name="date-picker" id="dateSlot">
-          <vaadin-date-time-picker-date-picker part="date" theme$="[[theme]]"></vaadin-date-time-picker-date-picker>
+          <vaadin-date-time-picker-date-picker part="date" theme$="[[theme]]" auto-open-disabled="[[autoOpenDisabled]]"></vaadin-date-time-picker-date-picker>
         </slot>
         <slot name="time-picker" id="timeSlot">
-          <vaadin-date-time-picker-time-picker part="time" theme$="[[theme]]"></vaadin-date-time-picker-time-picker>
+          <vaadin-date-time-picker-time-picker part="time" theme$="[[theme]]" auto-open-disabled="[[autoOpenDisabled]]"></vaadin-date-time-picker-time-picker>
         </slot>
       </div>
     </vaadin-date-time-picker-custom-field>
@@ -306,6 +306,11 @@ This program is available under Apache License Version 2.0, available at https:/
               type: String,
               value: ''
             },
+
+            /**
+             * Set true to prevent the overlay from opening automatically.
+             */
+            autoOpenDisabled: Boolean,
 
             /**
              * Set to true to disable this element.
