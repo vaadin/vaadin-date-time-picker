@@ -56,8 +56,12 @@ This program is available under Apache License Version 2.0, available at https:/
         i18n="[[__customFieldValueFormat]]"
         label="[[label]]"
         theme$="[[theme]]"
+        name="[[name]]"
+        invalid="[[invalid]]"
+        required="[[required]]"
         disabled$="[[disabled]]"
         readonly$="[[readonly]]"
+        error-message="[[errorMessage]]"
       >
       <div class="slot-container">
         <slot name="date-picker" id="dateSlot">
@@ -153,6 +157,41 @@ This program is available under Apache License Version 2.0, available at https:/
 
         static get properties() {
           return {
+            /**
+             * The value for this element.
+             *
+             * Supported date time format is based on ISO 8601 (without a time zone designator):
+             * - Minute precision `"YYYY-MM-DDThh:mm"` (default)
+             * - Second precision `"YYYY-MM-DDThh:mm:ss"`
+             * - Millisecond precision `"YYYY-MM-DDThh:mm:ss.fff"`
+             */
+            name: {
+              type: String
+            },
+
+            /**
+             * Set to true if the value is invalid.
+             */
+            invalid: {
+              type: Boolean,
+              reflectToAttribute: true,
+              notify: true,
+              value: false
+            },
+
+            /**
+             * Set to true to mark the input as required.
+             */
+            required: {
+              type: Boolean,
+              value: false
+            },
+
+            /**
+             * The error message to display when the input is invalid.
+             */
+            errorMessage: String,
+
             /**
              * The value for this element.
              *
@@ -355,6 +394,11 @@ This program is available under Apache License Version 2.0, available at https:/
 
         ready() {
           super.ready();
+
+          if (this.checkValidity.toString() !== Vaadin.DateTimePicker.prototype.checkValidity.toString()) {
+            this.$.customField.checkValidity = () => this.checkValidity();
+          }
+
           this.__changeEventHandler = this.__changeEventHandler.bind(this);
           this.__filterElements = node => node.nodeType === Node.ELEMENT_NODE;
 
@@ -684,6 +728,24 @@ This program is available under Apache License Version 2.0, available at https:/
             timeObject.milliseconds = this.__stepSegment < 4 ? undefined : timeObject.milliseconds;
           }
           return timeObject;
+        }
+
+        /**
+         * Returns true if `value` is valid, and sets the `invalid` flag appropriately.
+         *
+         * @return {boolean} True if the value is valid and sets the `invalid` flag appropriately
+         */
+        validate() {
+          return !(this.invalid = !this.checkValidity());
+        }
+
+        /**
+         * Returns true if the current input value satisfies all constraints (if any)
+         *
+         * You can override the `checkValidity` method for custom validations.
+         */
+        checkValidity() {
+          return this.$.customField.checkValidity();
         }
 
         // Copied from vaadin-time-picker

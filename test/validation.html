@@ -1,0 +1,195 @@
+<!doctype html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>vaadin-date-time-picker tests</title>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+  <link rel="import" href="../vaadin-date-time-picker.html">
+</head>
+
+<body>
+  <test-fixture id="default">
+    <template>
+      <vaadin-date-time-picker></vaadin-date-time-picker>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="slotted-inputs">
+    <template>
+      <vaadin-date-time-picker>
+        <vaadin-date-picker slot="date-picker"></vaadin-date-picker>
+        <vaadin-time-picker slot="time-picker"></vaadin-time-picker>
+      </vaadin-date-time-picker>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="initial-properties">
+    <template>
+      <vaadin-date-time-picker 
+        value="2019-09-16T15:00"
+        min="2019-09-01T08:00"
+        max="2019-09-30T22:00"
+        date-placeholder="Pick a date"
+        time-placeholder="Pick a time"
+        step="1800"
+        initial-position="1980-01-01"
+        show-week-numbers
+        label="Birth date and time"
+        disabled
+        readonly
+      ></vaadin-date-time-picker>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="slotted-initial-properties">
+    <template>
+      <vaadin-date-time-picker label="Birth date and time" min="2019-09-01T08:00" max="2019-09-30T22:00">
+        <vaadin-date-picker slot="date-picker"
+          value="2019-09-16"
+          placeholder="Pick a date"
+          initial-position="1980-01-01"
+          show-week-numbers
+          disabled
+          readonly
+        ></vaadin-date-picker>
+        <vaadin-time-picker slot="time-picker"
+          value="15:00"
+          placeholder="Pick a time"
+          step="1800"
+          disabled
+          readonly
+        ></vaadin-time-picker>
+      </vaadin-date-time-picker>
+    </template>
+  </test-fixture>
+
+  <script>
+    customElements.whenDefined('vaadin-date-time-picker').then(() => {
+      class DateTimePicker2020Element extends customElements.get('vaadin-date-time-picker') {
+        checkValidity() {
+          return this.value === '2020-02-02T20:20';
+        }
+      }
+      customElements.define('vaadin-date-time-picker-2020', DateTimePicker2020Element);
+    });
+  </script>
+
+  <test-fixture id="custom-validation">
+    <template>
+      <vaadin-date-time-picker-2020></vaadin-date-time-picker-2020>
+    </template>
+  </test-fixture>
+
+  <script>
+    describe(`Validation`, () => {
+      let dateTimePicker;
+      let customField;
+
+      ['default', 'slotted'].forEach(set => {
+
+        describe(`Default (${set})`, () => {
+
+          beforeEach(() => {
+            if (set === 'default') {
+              dateTimePicker = fixture('default');
+              customField = dateTimePicker.$.customField;
+            } else if (set === 'slotted') {
+              dateTimePicker = fixture('slotted-inputs');
+              customField = dateTimePicker.$.customField;
+            }
+          });
+
+          afterEach(() => {
+            dateTimePicker.invalid = false;
+            dateTimePicker.errorMessage = '';
+          });
+
+          it('should be required', () => {
+            dateTimePicker.required = true;
+            expect(customField.required).to.be.true;
+          });
+
+          it('should not be required', () => {
+            expect(customField.required).to.be.false;
+          });
+
+          it('should validate correctly with required flag', done => {
+            dateTimePicker.name = 'foo';
+            dateTimePicker.required = true;
+
+            setTimeout(() => {
+              expect(dateTimePicker.validate()).to.equal(false);
+              expect(dateTimePicker.invalid).to.be.equal(true);
+
+              dateTimePicker.value = '2020-02-02T02:02:00';
+              expect(dateTimePicker.validate()).to.equal(true);
+              expect(dateTimePicker.invalid).to.be.equal(false);
+
+              done();
+            });
+          });
+
+          it('should validate min/max dates', () => {
+            dateTimePicker.min = '2020-02-02T02:00';
+            dateTimePicker.max = '2020-02-02T04:00';
+
+            // Set invalid value.
+            dateTimePicker.value = '2020-02-02T01:00';
+            expect(dateTimePicker.validate()).to.equal(false);
+            expect(dateTimePicker.invalid).to.be.equal(true);
+
+            dateTimePicker.value = '2020-02-02T03:00';
+            expect(dateTimePicker.validate()).to.equal(true);
+            expect(dateTimePicker.invalid).to.be.equal(false);
+          });
+
+          it('should be possible to force invalid status', () => {
+            dateTimePicker.invalid = true;
+            expect(customField.invalid).to.be.true;
+          });
+
+          it('should display the error-message when invalid', () => {
+            dateTimePicker.invalid = true;
+            dateTimePicker.errorMessage = 'Not cool';
+            expect(customField.errorMessage).to.equal(dateTimePicker.errorMessage);
+          });
+        });
+
+        describe('required', () => {
+          beforeEach(() => {
+            dateTimePicker.required = true;
+          });
+
+          it('should not be invalid without user interactions', () => {
+            expect(dateTimePicker.invalid).to.be.false;
+          });
+
+          it('should be invalid after validate() if value is not set', () => {
+            dateTimePicker.validate();
+            expect(dateTimePicker.invalid).to.be.true;
+          });
+        });
+
+        describe('custom validator', () => {
+          beforeEach(() => {
+            dateTimePicker = fixture('custom-validation');
+          });
+
+          it('should validate correctly with custom validator', () => {
+            // Try invalid value.
+            dateTimePicker.value = '2030-03-03T20:30';
+            expect(dateTimePicker.validate()).to.equal(false);
+            expect(dateTimePicker.invalid).to.equal(true);
+
+            // Try valid value.
+            dateTimePicker.value = '2020-02-02T20:20';
+            expect(dateTimePicker.validate()).to.equal(true);
+            expect(dateTimePicker.invalid).to.equal(false);
+          });
+        });
+      });
+    });
+  </script>
+</body>

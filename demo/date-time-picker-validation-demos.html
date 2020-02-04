@@ -1,0 +1,51 @@
+<dom-module id="date-time-picker-validation-demos">
+  <template>
+    <style include="vaadin-component-demo-shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+
+    <h3>Required</h3>
+    <vaadin-demo-snippet id="date-time-picker-required">
+      <template preserve-content>
+        <vaadin-date-time-picker label="Date and time" required error-message="Please choose a value">
+        </vaadin-date-time-picker>
+      </template>
+    </vaadin-demo-snippet>
+
+    <h3>Custom validator</h3>
+    <p>
+      Extend <code>Vaadin.DateTimePickerElement</code> to create your own custom element,
+      then override the <code>checkValidity(value)</code> method to validate the input.
+    </p>
+    <vaadin-demo-snippet id="date-time-picker-custom-validator" ignore-ie when-defined="vaadin-date-time-picker">
+      <template preserve-content>
+        <vaadin-date-time-picker-working-range label="Select a working range" error-message="Only even numbers in date and time are allowed"></vaadin-date-time-picker-working-range>
+
+        <script>
+          window.addDemoReadyListener('#date-time-picker-custom-validator', function(document) {
+            class DateTimePickerWorkingRange extends Vaadin.DateTimePicker {
+              checkValidity() {
+                return this.value.replace(/0|-|T|:/g, '').split('')
+                  .filter(number => number % 2 !== 0).length === 0;
+              }
+            }
+            if (!customElements.get('vaadin-date-time-picker-working-range')) {
+              customElements.define('vaadin-date-time-picker-working-range', DateTimePickerWorkingRange);
+            }
+          });
+        </script>
+      </template>
+    </vaadin-demo-snippet>
+
+  </template>
+  <script>
+    class DateTimePickerValidationDemos extends DemoReadyEventEmitter(DateTimePickerDemo(Polymer.Element)) {
+      static get is() {
+        return 'date-time-picker-validation-demos';
+      }
+    }
+    customElements.define(DateTimePickerValidationDemos.is, DateTimePickerValidationDemos);
+  </script>
+</dom-module>
