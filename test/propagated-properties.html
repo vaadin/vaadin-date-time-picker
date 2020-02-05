@@ -37,7 +37,9 @@
         initial-position="1980-01-01"
         show-week-numbers
         label="Birth date and time"
+        error-message="error-message"
         disabled
+        required
         readonly
       ></vaadin-date-time-picker>
     </template>
@@ -51,14 +53,18 @@
           placeholder="Pick a date"
           initial-position="1980-01-01"
           show-week-numbers
+          error-message="error-message"
           disabled
+          required
           readonly
         ></vaadin-date-picker>
         <vaadin-time-picker slot="time-picker"
           value="15:00"
           placeholder="Pick a time"
           step="1800"
+          error-message="error-message"
           disabled
+          required
           readonly
         ></vaadin-time-picker>
       </vaadin-date-time-picker>
@@ -212,6 +218,21 @@
         it('should propagate label to custom field', () => {
           dateTimePicker.label = 'Birth date and time';
           expect(customField.label).to.equal('Birth date and time');
+        });
+
+        it('should propagate invalid to custom field', () => {
+          dateTimePicker.invalid = true;
+          expect(customField.invalid).to.be.true;
+        });
+
+        it('should propagate required to custom field', () => {
+          dateTimePicker.required = true;
+          expect(customField.required).to.be.true;
+        });
+
+        it('should propagate error-message to custom field', () => {
+          dateTimePicker.errorMessage = 'error-message';
+          expect(customField.errorMessage).to.equal('error-message');
         });
 
         it('should propagate disabled to date and time pickers', () => {

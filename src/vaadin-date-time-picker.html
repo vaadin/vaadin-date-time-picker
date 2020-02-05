@@ -56,7 +56,6 @@ This program is available under Apache License Version 2.0, available at https:/
         i18n="[[__customFieldValueFormat]]"
         label="[[label]]"
         theme$="[[theme]]"
-        name="[[name]]"
         invalid="[[invalid]]"
         required="[[required]]"
         disabled$="[[disabled]]"
@@ -179,13 +178,17 @@ This program is available under Apache License Version 2.0, available at https:/
              */
             required: {
               type: Boolean,
+              reflectToAttribute: true,
               value: false
             },
 
             /**
              * The error message to display when the input is invalid.
              */
-            errorMessage: String,
+            errorMessage: {
+              type: String,
+              reflectToAttribute: true
+            },
 
             /**
              * The value for this element.
@@ -728,7 +731,7 @@ This program is available under Apache License Version 2.0, available at https:/
         /**
          * Returns true if `value` is valid, and sets the `invalid` flag appropriately.
          *
-         * @return {boolean} True if the value is valid and sets the `invalid` flag appropriately
+         * @return {boolean} True if the value is valid.
          */
         validate() {
           return !(this.invalid = !this.checkValidity());
