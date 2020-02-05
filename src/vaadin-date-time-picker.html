@@ -395,7 +395,7 @@ This program is available under Apache License Version 2.0, available at https:/
         ready() {
           super.ready();
 
-          if (this.checkValidity.toString() !== Vaadin.DateTimePicker.prototype.checkValidity.toString()) {
+          if (this.checkValidity.toString() !== customElements.get('vaadin-date-time-picker').prototype.checkValidity.toString()) {
             this.$.customField.checkValidity = () => this.checkValidity();
           }
 
