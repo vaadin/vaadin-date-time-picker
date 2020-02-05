@@ -25,46 +25,6 @@
     </template>
   </test-fixture>
 
-  <test-fixture id="initial-properties">
-    <template>
-      <vaadin-date-time-picker 
-        value="2019-09-16T15:00"
-        min="2019-09-01T08:00"
-        max="2019-09-30T22:00"
-        date-placeholder="Pick a date"
-        time-placeholder="Pick a time"
-        step="1800"
-        initial-position="1980-01-01"
-        show-week-numbers
-        label="Birth date and time"
-        disabled
-        readonly
-      ></vaadin-date-time-picker>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="slotted-initial-properties">
-    <template>
-      <vaadin-date-time-picker label="Birth date and time" min="2019-09-01T08:00" max="2019-09-30T22:00">
-        <vaadin-date-picker slot="date-picker"
-          value="2019-09-16"
-          placeholder="Pick a date"
-          initial-position="1980-01-01"
-          show-week-numbers
-          disabled
-          readonly
-        ></vaadin-date-picker>
-        <vaadin-time-picker slot="time-picker"
-          value="15:00"
-          placeholder="Pick a time"
-          step="1800"
-          disabled
-          readonly
-        ></vaadin-time-picker>
-      </vaadin-date-time-picker>
-    </template>
-  </test-fixture>
-
   <script>
     customElements.whenDefined('vaadin-date-time-picker').then(() => {
       class DateTimePicker2020Element extends customElements.get('vaadin-date-time-picker') {
