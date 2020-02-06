@@ -60,11 +60,6 @@
             customField = dateTimePicker.$.customField;
           });
 
-          afterEach(() => {
-            dateTimePicker.invalid = false;
-            dateTimePicker.errorMessage = '';
-          });
-
           it('should be required', () => {
             dateTimePicker.required = true;
             expect(customField.required).to.be.true;
@@ -137,6 +132,11 @@
       });
 
       describe('custom validator', () => {
+        function changeInputValue(el, value) {
+          el.value = value;
+          el.dispatchEvent(new CustomEvent('change', {bubbles: true}));
+        }
+
         beforeEach(() => {
           dateTimePicker = fixture('custom-validation');
         });
@@ -151,6 +151,27 @@
           dateTimePicker.value = '2020-02-02T20:20';
           expect(dateTimePicker.validate()).to.equal(true);
           expect(dateTimePicker.invalid).to.equal(false);
+        });
+
+        it('should provide proper scope for the custom validator', () => {
+          dateTimePicker.checkValidity = function() {
+            expect(this.localName).to.equal('vaadin-date-time-picker-2020');
+          };
+          dateTimePicker.validate();
+        });
+
+        it('should provide proper scope for the custom validator', () => {
+          dateTimePicker.checkValidity = function() {
+            expect(this.localName).to.equal('vaadin-date-time-picker-2020');
+          };
+          dateTimePicker.validate();
+        });
+
+        it('should validate at the same point of time as the default validator', () => {
+          const checkValiditySpy = sinon.spy(dateTimePicker, 'checkValidity');
+          changeInputValue(dateTimePicker.__datePicker, '2020-02-02');
+          changeInputValue(dateTimePicker.__timePicker, '02:02');
+          expect(checkValiditySpy.callCount).to.equal(2);
         });
       });
     });

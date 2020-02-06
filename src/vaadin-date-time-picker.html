@@ -178,17 +178,13 @@ This program is available under Apache License Version 2.0, available at https:/
              */
             required: {
               type: Boolean,
-              reflectToAttribute: true,
               value: false
             },
 
             /**
              * The error message to display when the input is invalid.
              */
-            errorMessage: {
-              type: String,
-              reflectToAttribute: true
-            },
+            errorMessage: String,
 
             /**
              * The value for this element.
@@ -374,6 +370,7 @@ This program is available under Apache License Version 2.0, available at https:/
             '__stepChanged(step)',
             '__initialPositionChanged(initialPosition)',
             '__showWeekNumbersChanged(showWeekNumbers)',
+            '__requiredChanged(required)',
             '__disabledChanged(disabled)',
             '__readonlyChanged(readonly)',
             '__i18nChanged(i18n.*)'
@@ -468,6 +465,7 @@ This program is available under Apache License Version 2.0, available at https:/
           if (datePicker === defaultDatePicker) {
             // Synchronize properties to default date picker
             datePicker.placeholder = this.datePlaceholder;
+            datePicker.required = this.required;
             datePicker.initialPosition = this.initialPosition;
             datePicker.showWeekNumbers = this.showWeekNumbers;
             datePicker.disabled = this.disabled;
@@ -487,6 +485,7 @@ This program is available under Apache License Version 2.0, available at https:/
           // min and max need to be dynamically set depending on currently selected date instead of simple propagation
           datePicker.min = this.__formatDateISO(this.__minDateTime, this.__defaultDateMinMaxValue);
           datePicker.max = this.__formatDateISO(this.__maxDateTime, this.__defaultDateMinMaxValue);
+          datePicker.required = this.required;
         }
 
         __timePickerChanged() {
@@ -505,6 +504,7 @@ This program is available under Apache License Version 2.0, available at https:/
             // Synchronize properties to default time picker
             timePicker.placeholder = this.timePlaceholder;
             timePicker.step = this.step;
+            timePicker.required = this.required;
             timePicker.disabled = this.disabled;
             timePicker.readonly = this.readonly;
             this.__syncI18n(timePicker, this, timePickerI18nProps);
@@ -519,6 +519,7 @@ This program is available under Apache License Version 2.0, available at https:/
           // min and max are always synchronized from parent to slotted because time picker min and max
           // need to be dynamically set depending on currently selected date instead of simple propagation
           this.__updateTimePickerMinMax();
+          timePicker.required = this.required;
         }
 
         __updateTimePickerMinMax() {
@@ -599,6 +600,15 @@ This program is available under Apache License Version 2.0, available at https:/
         __showWeekNumbersChanged(showWeekNumbers) {
           if (this.__datePicker) {
             this.__datePicker.showWeekNumbers = showWeekNumbers;
+          }
+        }
+
+        __requiredChanged(required) {
+          if (this.__datePicker) {
+            this.__datePicker.required = required;
+          }
+          if (this.__timePicker) {
+            this.__timePicker.required = required;
           }
         }
 
