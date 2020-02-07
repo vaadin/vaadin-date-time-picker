@@ -40,12 +40,14 @@ This program is available under Apache License Version 2.0, available at https:/
 
       [part="date"],
       .slot-container ::slotted([slot="date-picker"]) {
+        pointer-events: all;
         min-width: 0;
         flex: 1 1 auto;
       }
 
       [part="time"],
       .slot-container ::slotted([slot="time-picker"]) {
+        pointer-events: all;
         min-width: 0;
         flex: 1 1.65 auto;
       }
@@ -371,6 +373,7 @@ This program is available under Apache License Version 2.0, available at https:/
             '__initialPositionChanged(initialPosition)',
             '__showWeekNumbersChanged(showWeekNumbers)',
             '__requiredChanged(required)',
+            '__invalidChanged(invalid)',
             '__disabledChanged(disabled)',
             '__readonlyChanged(readonly)',
             '__i18nChanged(i18n.*)'
@@ -390,9 +393,11 @@ This program is available under Apache License Version 2.0, available at https:/
         ready() {
           super.ready();
 
-          if (this.checkValidity.toString() !== customElements.get('vaadin-date-time-picker').prototype.checkValidity.toString()) {
-            this.$.customField.checkValidity = () => this.checkValidity();
-          }
+          this.addEventListener('focusout', e => {
+            if (e.relatedTarget !== this.__datePicker.$.overlay) {
+              this.validate();
+            }
+          });
 
           this.__changeEventHandler = this.__changeEventHandler.bind(this);
           this.__filterElements = node => node.nodeType === Node.ELEMENT_NODE;
@@ -466,6 +471,7 @@ This program is available under Apache License Version 2.0, available at https:/
             // Synchronize properties to default date picker
             datePicker.placeholder = this.datePlaceholder;
             datePicker.required = this.required;
+            datePicker.invalid = this.invalid;
             datePicker.initialPosition = this.initialPosition;
             datePicker.showWeekNumbers = this.showWeekNumbers;
             datePicker.disabled = this.disabled;
@@ -476,6 +482,7 @@ This program is available under Apache License Version 2.0, available at https:/
             this.datePlaceholder = datePicker.placeholder;
             this.initialPosition = datePicker.initialPosition;
             this.showWeekNumbers = datePicker.showWeekNumbers;
+            this.invalid = datePicker.invalid;
             this.disabled = datePicker.disabled;
             this.readonly = datePicker.readonly;
             this.__syncI18n(this, datePicker, datePickerI18nProps);
@@ -486,6 +493,10 @@ This program is available under Apache License Version 2.0, available at https:/
           datePicker.min = this.__formatDateISO(this.__minDateTime, this.__defaultDateMinMaxValue);
           datePicker.max = this.__formatDateISO(this.__maxDateTime, this.__defaultDateMinMaxValue);
           datePicker.required = this.required;
+
+          // Disable default internal validation for the component
+          datePicker.validate = () => {};
+          datePicker._validateInput = () => {};
         }
 
         __timePickerChanged() {
@@ -505,6 +516,7 @@ This program is available under Apache License Version 2.0, available at https:/
             timePicker.placeholder = this.timePlaceholder;
             timePicker.step = this.step;
             timePicker.required = this.required;
+            timePicker.invalid = this.invalid;
             timePicker.disabled = this.disabled;
             timePicker.readonly = this.readonly;
             this.__syncI18n(timePicker, this, timePickerI18nProps);
@@ -512,6 +524,7 @@ This program is available under Apache License Version 2.0, available at https:/
             // Synchronize properties from slotted time picker
             this.timePlaceholder = timePicker.placeholder;
             this.step = timePicker.step;
+            this.invalid = timePicker.invalid;
             // Don't set disabled or readonly from time picker since they're already set from date picker
             this.__syncI18n(this, timePicker, timePickerI18nProps);
           }
@@ -520,6 +533,9 @@ This program is available under Apache License Version 2.0, available at https:/
           // need to be dynamically set depending on currently selected date instead of simple propagation
           this.__updateTimePickerMinMax();
           timePicker.required = this.required;
+
+          // Disable default internal validation for the component
+          timePicker.validate = () => {};
         }
 
         __updateTimePickerMinMax() {
@@ -600,6 +616,15 @@ This program is available under Apache License Version 2.0, available at https:/
         __showWeekNumbersChanged(showWeekNumbers) {
           if (this.__datePicker) {
             this.__datePicker.showWeekNumbers = showWeekNumbers;
+          }
+        }
+
+        __invalidChanged(invalid) {
+          if (this.__datePicker) {
+            this.__datePicker.invalid = invalid;
+          }
+          if (this.__timePicker) {
+            this.__timePicker.invalid = invalid;
           }
         }
 
@@ -753,7 +778,19 @@ This program is available under Apache License Version 2.0, available at https:/
          * You can override the `checkValidity` method for custom validations.
          */
         checkValidity() {
-          return this.$.customField.checkValidity();
+          // TODO: create a workaround to avoid problem of manual sync of invalid props
+          // which causes invalid state on date-picker-text-field
+
+          // TODO: create workaround to avoid problems with validation rounds of date-picker
+
+          const invalidFields = this.$.customField.inputs
+            .filter(input => !(input.checkValidity).call(input)).length > 0;
+          const inputsEmpty = this.required && this.$.customField.inputs.filter(el => !el.value).length > 0;
+
+          if (invalidFields || inputsEmpty) {
+            return false;
+          }
+          return true;
         }
 
         // Copied from vaadin-time-picker
@@ -811,7 +848,9 @@ This program is available under Apache License Version 2.0, available at https:/
 
           if (this.__doDispatchChange) {
             this.__dispatchChange();
+            this.validate();
           }
+
         }
 
         __dispatchChange() {

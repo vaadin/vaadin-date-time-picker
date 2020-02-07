@@ -26,15 +26,16 @@ This program is available under Apache License Version 2.0, available at https:/
         return 'vaadin-date-time-picker-custom-field';
       }
 
-      checkValidity() {
-        const invalidFields = this.inputs
-          .filter(input => !(input.checkValidity || input.validate).call(input));
+      validate() {
+        return;
+      }
 
-        if (invalidFields.length ||
-          (this.required && this.inputs.filter(input => !input.value).length > 0)) {
-          return false;
+      __toggleHasValue(value) {
+        if (value !== null && value.trim() !== '' && value !== 'T') {
+          this.setAttribute('has-value', '');
+        } else {
+          this.removeAttribute('has-value');
         }
-        return true;
       }
     }
 
