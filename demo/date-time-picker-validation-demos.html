@@ -21,18 +21,33 @@
     </p>
     <vaadin-demo-snippet id="date-time-picker-custom-validator" ignore-ie when-defined="vaadin-date-time-picker">
       <template preserve-content>
-        <vaadin-date-time-picker-working-range label="Select a working range" error-message="Only even numbers in date and time are allowed"></vaadin-date-time-picker-working-range>
+        <vaadin-date-time-picker-appointment label="Select appointment time"></vaadin-date-time-picker-appointment>
 
         <script>
           window.addDemoReadyListener('#date-time-picker-custom-validator', function(document) {
-            class DateTimePickerWorkingRange extends Vaadin.DateTimePicker {
+            class DateTimePickerAppointment extends Vaadin.DateTimePicker {
               checkValidity() {
-                return this.value.replace(/0|-|T|:/g, '').split('')
-                  .filter(number => number % 2 !== 0).length === 0;
+                const date = new Date(this.value);
+                const day = date.getDay();
+                const totalMinutes = date.getHours() * 60 + date.getMinutes();
+
+                if (day < 5) {
+                  this.errorMessage = 'Working hours Sun-Thu: 10-15';
+                  if (totalMinutes >= 600 && totalMinutes <= 900) {
+                    return true;
+                  }
+                } else if (day >= 5) {
+                  this.errorMessage = 'Working hours Fri-Sat: 09-12';
+                  if (totalMinutes >= 540 && totalMinutes <= 720) {
+                    return true;
+                  }
+                }
+
+                return false;
               }
             }
-            if (!customElements.get('vaadin-date-time-picker-working-range')) {
-              customElements.define('vaadin-date-time-picker-working-range', DateTimePickerWorkingRange);
+            if (!customElements.get('vaadin-date-time-picker-appointment')) {
+              customElements.define('vaadin-date-time-picker-appointment', DateTimePickerAppointment);
             }
           });
         </script>

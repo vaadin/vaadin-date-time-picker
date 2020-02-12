@@ -470,7 +470,6 @@ This program is available under Apache License Version 2.0, available at https:/
           if (datePicker === defaultDatePicker) {
             // Synchronize properties to default date picker
             datePicker.placeholder = this.datePlaceholder;
-            datePicker.required = this.required;
             datePicker.invalid = this.invalid;
             datePicker.initialPosition = this.initialPosition;
             datePicker.showWeekNumbers = this.showWeekNumbers;
@@ -515,7 +514,6 @@ This program is available under Apache License Version 2.0, available at https:/
             // Synchronize properties to default time picker
             timePicker.placeholder = this.timePlaceholder;
             timePicker.step = this.step;
-            timePicker.required = this.required;
             timePicker.invalid = this.invalid;
             timePicker.disabled = this.disabled;
             timePicker.readonly = this.readonly;
@@ -778,11 +776,6 @@ This program is available under Apache License Version 2.0, available at https:/
          * You can override the `checkValidity` method for custom validations.
          */
         checkValidity() {
-          // TODO: create a workaround to avoid problem of manual sync of invalid props
-          // which causes invalid state on date-picker-text-field
-
-          // TODO: create workaround to avoid problems with validation rounds of date-picker
-
           const invalidFields = this.$.customField.inputs
             .filter(input => !(input.checkValidity).call(input)).length > 0;
           const inputsEmpty = this.required && this.$.customField.inputs.filter(el => !el.value).length > 0;
