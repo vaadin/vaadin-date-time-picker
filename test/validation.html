@@ -69,6 +69,13 @@
             expect(customField.required).to.be.falsy;
           });
 
+          it('should not trigger custom field validation', () => {
+            const validitySpy = sinon.spy(customField, 'checkValidity');
+            customField.validate();
+            expect(validitySpy.called).to.be.false;
+            expect(customField.invalid).to.be.false;
+          });
+
           it('should validate correctly with required flag', () => {
             dateTimePicker.name = 'foo';
             dateTimePicker.required = true;

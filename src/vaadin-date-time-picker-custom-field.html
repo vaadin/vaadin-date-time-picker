@@ -27,8 +27,6 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       connectedCallback() {
-        super.connectedCallback();
-
         this.__toggleHasValue = function(value) {
           if (value !== null && value.trim() !== '' && value !== 'T') {
             this.setAttribute('has-value', '');
@@ -36,6 +34,8 @@ This program is available under Apache License Version 2.0, available at https:/
             this.removeAttribute('has-value');
           }
         };
+
+        super.connectedCallback();
       }
 
       validate() {
