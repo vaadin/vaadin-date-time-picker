@@ -38,9 +38,7 @@
         show-week-numbers
         label="Birth date and time"
         error-message="error-message"
-        disabled
         required
-        readonly
       ></vaadin-date-time-picker>
     </template>
   </test-fixture>
@@ -53,15 +51,11 @@
           placeholder="Pick a date"
           initial-position="1980-01-01"
           show-week-numbers
-          disabled
-          readonly
         ></vaadin-date-picker>
         <vaadin-time-picker slot="time-picker"
           value="15:00"
           placeholder="Pick a time"
           step="1800"
-          disabled
-          readonly
         ></vaadin-time-picker>
       </vaadin-date-time-picker>
     </template>
@@ -365,17 +359,6 @@
           expect(customField.label).to.equal('Birth date and time');
         });
 
-        it('should have initial value for disabled', () => {
-          expect(dateTimePicker.disabled).to.be.true;
-          expect(datePicker.disabled).to.be.true;
-          expect(timePicker.disabled).to.be.true;
-        });
-
-        it('should have initial value for readonly', () => {
-          expect(dateTimePicker.readonly).to.be.true;
-          expect(datePicker.readonly).to.be.true;
-          expect(timePicker.readonly).to.be.true;
-        });
 
       });
     });

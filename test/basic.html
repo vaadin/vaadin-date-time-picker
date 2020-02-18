@@ -350,12 +350,19 @@
           expect(customField.inputs[1]).to.equal(timePicker);
         });
 
-        it('custom field should not have has-value by default', () => {
+        it('should not have has-value on custom field by default', () => {
           expect(customField.hasAttribute('has-value')).to.be.false;
         });
 
-        it('custom field should have has-value when value is provided', () => {
+        it('should not have has-value on custom field if only date or time is selected', () => {
           timePicker.value = '15:00';
+          dateTimePicker.__triggerCustomFieldValueUpdate();
+          expect(customField.hasAttribute('has-value')).to.be.false;
+        });
+
+        it('should have has-value on custom field if both date or time are selected', () => {
+          timePicker.value = '15:00';
+          datePicker.value = '2019-09-16';
           dateTimePicker.__triggerCustomFieldValueUpdate();
           expect(customField.hasAttribute('has-value')).to.be.true;
         });

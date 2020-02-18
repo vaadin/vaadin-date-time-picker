@@ -481,9 +481,6 @@ This program is available under Apache License Version 2.0, available at https:/
             this.datePlaceholder = datePicker.placeholder;
             this.initialPosition = datePicker.initialPosition;
             this.showWeekNumbers = datePicker.showWeekNumbers;
-            this.invalid = datePicker.invalid;
-            this.disabled = datePicker.disabled;
-            this.readonly = datePicker.readonly;
             this.__syncI18n(this, datePicker, datePickerI18nProps);
           }
 
@@ -522,7 +519,6 @@ This program is available under Apache License Version 2.0, available at https:/
             // Synchronize properties from slotted time picker
             this.timePlaceholder = timePicker.placeholder;
             this.step = timePicker.step;
-            this.invalid = timePicker.invalid;
             // Don't set disabled or readonly from time picker since they're already set from date picker
             this.__syncI18n(this, timePicker, timePickerI18nProps);
           }
@@ -776,11 +772,11 @@ This program is available under Apache License Version 2.0, available at https:/
          * You can override the `checkValidity` method for custom validations.
          */
         checkValidity() {
-          const invalidFields = this.$.customField.inputs
+          const hasInvalidFields = this.$.customField.inputs
             .filter(input => !(input.checkValidity).call(input)).length > 0;
-          const inputsEmpty = this.required && this.$.customField.inputs.filter(el => !el.value).length > 0;
+          const hasEmptyFields = this.required && this.$.customField.inputs.filter(el => !el.value).length > 0;
 
-          if (invalidFields || inputsEmpty) {
+          if (hasInvalidFields || hasEmptyFields) {
             return false;
           }
           return true;
