@@ -354,13 +354,19 @@
           expect(customField.hasAttribute('has-value')).to.be.false;
         });
 
-        it('should not have has-value on custom field if only date or time is selected', () => {
+        it('should not have has-value on custom field if only time is selected', () => {
           timePicker.value = '15:00';
           dateTimePicker.__triggerCustomFieldValueUpdate();
           expect(customField.hasAttribute('has-value')).to.be.false;
         });
 
-        it('should have has-value on custom field if both date or time are selected', () => {
+        it('should not have has-value on custom field if only date is selected', () => {
+          datePicker.value = '15:00';
+          dateTimePicker.__triggerCustomFieldValueUpdate();
+          expect(customField.hasAttribute('has-value')).to.be.false;
+        });
+
+        it('should have has-value on custom field if both date and time are selected', () => {
           timePicker.value = '15:00';
           datePicker.value = '2019-09-16';
           dateTimePicker.__triggerCustomFieldValueUpdate();
