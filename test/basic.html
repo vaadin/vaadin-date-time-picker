@@ -361,7 +361,7 @@
         });
 
         it('should not have has-value on custom field if only date is selected', () => {
-          datePicker.value = '15:00';
+          datePicker.value = '2019-09-16';
           dateTimePicker.__triggerCustomFieldValueUpdate();
           expect(customField.hasAttribute('has-value')).to.be.false;
         });
