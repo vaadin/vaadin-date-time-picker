@@ -7,6 +7,7 @@
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="../../test-fixture/test-fixture.html">
   <link rel="import" href="../vaadin-date-time-picker.html">
+  <script src="common.js"></script>
 </head>
 
 <body>
@@ -336,6 +337,14 @@
         });
 
         it('should have initial value for value property', () => {
+          if (ie11 && set === 'slotted' && customField.hasAttribute('disabled')) {
+            // In IE11 with the slotted fixture the value doesn't get propagated from custom-field
+            // to date-time-picker for some reason when the custom-field has "disabled" attribute.
+            // For this tests sake (which is not supposed to test disabled state anyway) we can fix
+            // this by manually triggering the custom-field value change handler in date-time-picker.
+            dateTimePicker.__customFieldValueChanged(new CustomEvent('value-changed', {detail: {value: customField.value}}));
+          }
+
           expect(dateTimePicker.value).to.equal('2019-09-16T15:00');
           expect(datePicker.value).to.equal('2019-09-16');
           expect(timePicker.value).to.equal('15:00');
