@@ -66,10 +66,10 @@ This program is available under Apache License Version 2.0, available at https:/
       >
       <div class="slot-container">
         <slot name="date-picker" id="dateSlot">
-          <vaadin-date-time-picker-date-picker part="date" theme$="[[theme]]" auto-open-disabled="[[autoOpenDisabled]]"></vaadin-date-time-picker-date-picker>
+          <vaadin-date-time-picker-date-picker part="date" theme$="[[theme]]"></vaadin-date-time-picker-date-picker>
         </slot>
         <slot name="time-picker" id="timeSlot">
-          <vaadin-date-time-picker-time-picker part="time" theme$="[[theme]]" auto-open-disabled="[[autoOpenDisabled]]"></vaadin-date-time-picker-time-picker>
+          <vaadin-date-time-picker-time-picker part="time" theme$="[[theme]]"></vaadin-date-time-picker-time-picker>
         </slot>
       </div>
     </vaadin-date-time-picker-custom-field>
@@ -381,7 +381,8 @@ This program is available under Apache License Version 2.0, available at https:/
             '__invalidChanged(invalid)',
             '__disabledChanged(disabled)',
             '__readonlyChanged(readonly)',
-            '__i18nChanged(i18n.*)'
+            '__i18nChanged(i18n.*)',
+            '__autoOpenDisabledChanged(autoOpenDisabled)'
           ];
         }
 
@@ -494,6 +495,7 @@ This program is available under Apache License Version 2.0, available at https:/
           datePicker.required = this.required;
           datePicker.disabled = this.disabled;
           datePicker.readonly = this.readonly;
+          datePicker.autoOpenDisabled = this.autoOpenDisabled;
 
           // Disable default internal validation for the component
           datePicker.validate = () => {};
@@ -531,6 +533,7 @@ This program is available under Apache License Version 2.0, available at https:/
           timePicker.required = this.required;
           timePicker.disabled = this.disabled;
           timePicker.readonly = this.readonly;
+          timePicker.autoOpenDisabled = this.autoOpenDisabled;
 
           // Disable default internal validation for the component
           timePicker.validate = () => {};
@@ -917,6 +920,15 @@ This program is available under Apache License Version 2.0, available at https:/
             this.value = '';
           }
           this.__doDispatchChange = false;
+        }
+
+        __autoOpenDisabledChanged(autoOpenDisabled) {
+          if (this.__datePicker) {
+            this.__datePicker.autoOpenDisabled = autoOpenDisabled;
+          }
+          if (this.__timePicker) {
+            this.__timePicker.autoOpenDisabled = autoOpenDisabled;
+          }
         }
 
         /**
