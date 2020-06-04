@@ -11,11 +11,16 @@
     const dir = window.location.search.replace(/.*dir=(\w+).*/, '$1') || 'ltr';
     document.documentElement.setAttribute('dir', dir);
   </script>
+  <style>
+    vaadin-date-time-picker {
+      text-align: initial;
+    }
+  </style>
 </head>
 
 <body>
 
-  <div id="default-tests" style="padding: 10px; text-align: right; width: 500px">
+  <div id="default-tests" style="padding: 10px; text-align: end; width: 500px">
     Plain
     <vaadin-date-time-picker></vaadin-date-time-picker>
 
