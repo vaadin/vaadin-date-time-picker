@@ -1,83 +1,63 @@
-<!doctype html>
+import { expect } from '@esm-bundle/chai';
+import sinon from 'sinon';
+import { dispatchChange, fixtureSync } from './helpers.js';
+import '../vaadin-date-time-picker.js';
 
-<head>
-  <meta charset="UTF-8">
-  <title>vaadin-date-time-picker tests</title>
-  <script src="../../../wct-browser-legacy/browser.js"></script>
-  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
-  <script type="module" src="../vaadin-date-time-picker.js"></script>
-  <script src="./common.js"></script>
-</head>
-
-<body>
-  <test-fixture id="default">
-    <template>
-      <vaadin-date-time-picker></vaadin-date-time-picker>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="slotted-inputs">
-    <template>
-      <vaadin-date-time-picker>
-        <vaadin-date-picker slot="date-picker"></vaadin-date-picker>
-        <vaadin-time-picker slot="time-picker"></vaadin-time-picker>
-      </vaadin-date-time-picker>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="initial-properties">
-    <template>
-      <vaadin-date-time-picker
-        value="2019-09-16T15:00"
-        min="2019-09-01T08:00"
-        max="2019-09-30T22:00"
-        date-placeholder="Pick a date"
-        time-placeholder="Pick a time"
-        step="1800"
+const fixtures = {
+  default: '<vaadin-date-time-picker></vaadin-date-time-picker>',
+  slotted: `
+    <vaadin-date-time-picker>
+      <vaadin-date-picker slot="date-picker"></vaadin-date-picker>
+      <vaadin-time-picker slot="time-picker"></vaadin-time-picker>
+    </vaadin-date-time-picker>
+  `,
+  'default-initial': `
+    <vaadin-date-time-picker
+      value="2019-09-16T15:00"
+      min="2019-09-01T08:00"
+      max="2019-09-30T22:00"
+      date-placeholder="Pick a date"
+      time-placeholder="Pick a time"
+      step="1800"
+      initial-position="1980-01-01"
+      show-week-numbers
+      label="Birth date and time"
+      error-message="error-message"
+      required
+      disabled
+      readonly
+      auto-open-disabled
+    ></vaadin-date-time-picker>
+  `,
+  'slotted-initial': `
+    <vaadin-date-time-picker
+      label="Birth date and time"
+      error-message="error-message"
+      required
+      disabled
+      readonly
+      auto-open-disabled
+      min="2019-09-01T08:00"
+      max="2019-09-30T22:00"
+    >
+      <vaadin-date-picker
+        slot="date-picker"
+        value="2019-09-16"
+        placeholder="Pick a date"
         initial-position="1980-01-01"
         show-week-numbers
-        label="Birth date and time"
-        error-message="error-message"
-        required
-        disabled
-        readonly
-        auto-open-disabled
-      ></vaadin-date-time-picker>
-    </template>
-  </test-fixture>
+      ></vaadin-date-picker>
+      <vaadin-time-picker
+        slot="time-picker"
+        value="15:00"
+        placeholder="Pick a time"
+        step="1800"
+      ></vaadin-time-picker>
+    </vaadin-date-time-picker>
+  `
+};
 
-  <test-fixture id="slotted-initial-properties">
-    <template>
-      <vaadin-date-time-picker label="Birth date and time"
-          error-message="error-message"
-          required
-          disabled
-          readonly
-          auto-open-disabled
-          min="2019-09-01T08:00"
-          max="2019-09-30T22:00">
-        <vaadin-date-picker slot="date-picker"
-          value="2019-09-16"
-          placeholder="Pick a date"
-          initial-position="1980-01-01"
-          show-week-numbers
-        ></vaadin-date-picker>
-        <vaadin-time-picker slot="time-picker"
-          value="15:00"
-          placeholder="Pick a time"
-          step="1800"
-        ></vaadin-time-picker>
-      </vaadin-date-time-picker>
-    </template>
-  </test-fixture>
-
-  <script type="module">
-import '@polymer/test-fixture/test-fixture.js';
-import '../vaadin-date-time-picker.js';
-const dispatchChange = elem => elem.dispatchEvent(new CustomEvent('change', {bubbles: true}));
-
-['default', 'slotted'].forEach(set => {
+['default', 'slotted'].forEach((set) => {
   describe(`Property propagation (${set})`, () => {
     let dateTimePicker;
     let customField;
@@ -85,17 +65,21 @@ const dispatchChange = elem => elem.dispatchEvent(new CustomEvent('change', {bub
     let timePicker;
 
     beforeEach(() => {
+      dateTimePicker = fixtureSync(fixtures[set]);
+
+      customField = dateTimePicker.$.customField;
+
       if (set === 'default') {
-        dateTimePicker = fixture('default');
-        customField = dateTimePicker.$.customField;
         datePicker = customField.inputs[0];
         timePicker = customField.inputs[1];
-      } else if (set === 'slotted') {
-        dateTimePicker = fixture('slotted-inputs');
-        customField = dateTimePicker.$.customField;
+      } else {
         datePicker = dateTimePicker.querySelector('[slot="date-picker"]');
         timePicker = dateTimePicker.querySelector('[slot="time-picker"]');
       }
+    });
+
+    afterEach(() => {
+      dateTimePicker.remove();
     });
 
     it('should propagate value to date and time pickers', () => {
@@ -111,11 +95,14 @@ const dispatchChange = elem => elem.dispatchEvent(new CustomEvent('change', {bub
     it('should propagate min to date and time pickers', () => {
       expect(datePicker.min).to.equal(dateTimePicker.__defaultDateMinMaxValue);
       expect(timePicker.min).to.equal(dateTimePicker.__defaultTimeMinValue);
+
       dateTimePicker.min = '2019-09-01T08:00';
       expect(datePicker.min).to.equal('2019-09-01');
       expect(timePicker.min).to.equal('00:00:00.000');
+
       dateTimePicker.value = '2019-09-01T12:00';
       expect(timePicker.min).to.equal('08:00');
+
       dateTimePicker.value = '2019-09-10T12:00';
       expect(timePicker.min).to.equal('00:00:00.000');
     });
@@ -146,7 +133,7 @@ const dispatchChange = elem => elem.dispatchEvent(new CustomEvent('change', {bub
       dispatchChange(datePicker);
       expect(timePicker.value).to.equal('01:00');
       expect(dateTimePicker.value).to.equal('2019-12-16T01:00');
-      expect(valueChangedSpy).to.have.been.calledOnce;
+      expect(valueChangedSpy.calledOnce).to.be.true;
     });
 
     it('should ignore value change from time picker when date change affects max of time picker', () => {
@@ -163,7 +150,7 @@ const dispatchChange = elem => elem.dispatchEvent(new CustomEvent('change', {bub
       dispatchChange(datePicker);
       expect(timePicker.value).to.equal('12:00');
       expect(dateTimePicker.value).to.equal('2019-12-20T12:00');
-      expect(valueChangedSpy).to.have.been.calledOnce;
+      expect(valueChangedSpy.calledOnce).to.be.true;
     });
 
     it('should always propagate same day min and max to time picker (min first)', () => {
@@ -280,48 +267,49 @@ const dispatchChange = elem => elem.dispatchEvent(new CustomEvent('change', {bub
     });
 
     it('should propagate i18n properties observably to date picker', () => {
-      const datePickerSpy = datePicker.__i18nSpy = sinon.spy();
+      const datePickerSpy = (datePicker.__i18nSpy = sinon.spy());
       datePicker._createMethodObserver('__i18nSpy(i18n.*)', true);
       // First change record for a complex observer will contain the whole observed object so let's flush it with a dummy change
       dateTimePicker.set('i18n._flush', null);
 
       dateTimePicker.set('i18n.cancel', 'Peruuta');
-      expect(datePickerSpy).to.have.been.calledWith(sinon.match({path: 'i18n.cancel', value: 'Peruuta'}));
+      expect(datePickerSpy.calledWith(sinon.match({ path: 'i18n.cancel', value: 'Peruuta' }))).to.be.true;
     });
 
     it('should propagate i18n properties observably to time picker', () => {
-      const timePickerSpy = timePicker.__i18nSpy = sinon.spy();
+      const timePickerSpy = (timePicker.__i18nSpy = sinon.spy());
       timePicker._createMethodObserver('__i18nSpy(i18n.*)', true);
       // First change record for a complex observer will contain the whole observed object so let's flush it with a dummy change
       dateTimePicker.set('i18n._flush', null);
 
       dateTimePicker.set('i18n.selector', 'Ajan valitsin');
-      expect(timePickerSpy).to.have.been.calledWith(sinon.match({path: 'i18n.selector', value: 'Ajan valitsin'}));
+      expect(timePickerSpy.calledWith(sinon.match({ path: 'i18n.selector', value: 'Ajan valitsin' }))).to.be.true;
     });
   });
-});
 
-['default', 'slotted'].forEach(set => {
   describe(`Initial property values (${set})`, () => {
     let dateTimePicker;
     let customField;
     let datePicker;
     let timePicker;
 
-    // No need for "beforeEach" to recreate the fixture before every test since these tests do not
-    // modify the state but only check the initial state.
+    // No need for "beforeEach" to recreate the fixture before every test since
+    // these tests do not modify the state but only check the initial state.
     before(() => {
+      dateTimePicker = fixtureSync(fixtures[`${set}-initial`]);
+      customField = dateTimePicker.$.customField;
+
       if (set === 'default') {
-        dateTimePicker = fixture('initial-properties');
-        customField = dateTimePicker.$.customField;
         datePicker = customField.inputs[0];
         timePicker = customField.inputs[1];
-      } else if (set === 'slotted') {
-        dateTimePicker = fixture('slotted-initial-properties');
-        customField = dateTimePicker.$.customField;
+      } else {
         datePicker = dateTimePicker.querySelector('[slot="date-picker"]');
         timePicker = dateTimePicker.querySelector('[slot="time-picker"]');
       }
+    });
+
+    after(() => {
+      dateTimePicker.remove();
     });
 
     it('should have initial value for errorMessage', () => {
@@ -355,14 +343,6 @@ const dispatchChange = elem => elem.dispatchEvent(new CustomEvent('change', {bub
     });
 
     it('should have initial value for value property', () => {
-      if (ie11 && set === 'slotted' && customField.hasAttribute('disabled')) {
-        // In IE11 with the slotted fixture the value doesn't get propagated from custom-field
-        // to date-time-picker for some reason when the custom-field has "disabled" attribute.
-        // For this tests sake (which is not supposed to test disabled state anyway) we can fix
-        // this by manually triggering the custom-field value change handler in date-time-picker.
-        dateTimePicker.__customFieldValueChanged(new CustomEvent('value-changed', {detail: {value: customField.value}}));
-      }
-
       expect(dateTimePicker.value).to.equal('2019-09-16T15:00');
       expect(datePicker.value).to.equal('2019-09-16');
       expect(timePicker.value).to.equal('15:00');
@@ -409,8 +389,5 @@ const dispatchChange = elem => elem.dispatchEvent(new CustomEvent('change', {bub
       expect(dateTimePicker.label).to.equal('Birth date and time');
       expect(customField.label).to.equal('Birth date and time');
     });
-
   });
 });
-</script>
-</body>

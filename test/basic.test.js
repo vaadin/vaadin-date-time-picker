@@ -1,91 +1,35 @@
-<!doctype html>
-
-<head>
-  <meta charset="UTF-8">
-  <title>vaadin-date-time-picker tests</title>
-  <script src="../../../wct-browser-legacy/browser.js"></script>
-  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
-  <script type="module" src="../vaadin-date-time-picker.js"></script>
-  <script src="./common.js"></script>
-</head>
-
-<body>
-  <test-fixture id="default">
-    <template>
-      <vaadin-date-time-picker></vaadin-date-time-picker>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="initial-value">
-    <template>
-      <vaadin-date-time-picker value="2019-09-16T15:00"></vaadin-date-time-picker>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="dtp-with-slotted-helper">
-    <template>
-      <vaadin-date-time-picker>
-        <div slot="helper">foo</div>
-      </vaadin-date-time-picker>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="theme-attribute">
-    <template>
-      <vaadin-date-time-picker theme="foo"></vaadin-date-time-picker>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="slotted-inputs">
-    <template>
-      <vaadin-date-time-picker>
-        <vaadin-date-picker slot="date-picker"></vaadin-date-picker>
-        <vaadin-time-picker slot="time-picker"></vaadin-time-picker>
-      </vaadin-date-time-picker>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="lazy-slotted-inputs">
-    <template>
-      <vaadin-date-time-picker>
-        <vaadin-date-picker slot="setAfterReady"></vaadin-date-picker>
-        <vaadin-time-picker slot="setAfterReady"></vaadin-time-picker>
-      </vaadin-date-time-picker>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="slotted-values">
-    <template>
-      <vaadin-date-time-picker>
-        <vaadin-date-picker slot="date-picker" value="2019-09-16"></vaadin-date-picker>
-        <vaadin-time-picker slot="time-picker" value="15:00"></vaadin-time-picker>
-      </vaadin-date-time-picker>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="lazy-slotted-values">
-    <template>
-      <vaadin-date-time-picker>
-        <vaadin-date-picker slot="setAfterReady" value="2019-09-16"></vaadin-date-picker>
-        <vaadin-time-picker slot="setAfterReady" value="15:00"></vaadin-time-picker>
-      </vaadin-date-time-picker>
-    </template>
-  </test-fixture>
-
-  <test-fixture id="autofocus">
-    <template>
-      <vaadin-date-time-picker autofocus></vaadin-date-time-picker>
-    </template>
-  </test-fixture>
-
-  <script type="module">
-import '@polymer/test-fixture/test-fixture.js';
+import { expect } from '@esm-bundle/chai';
+import sinon from 'sinon';
+import { aTimeout, nextFrame } from '@open-wc/testing-helpers';
+import { changeInputValue, fixtureSync } from './helpers.js';
 import '../vaadin-date-time-picker.js';
-function changeInputValue(el, value) {
-  el.value = value;
-  el.dispatchEvent(new CustomEvent('change', {bubbles: true}));
-}
+
+const fixtures = {
+  'default-inputs': `
+    <vaadin-date-time-picker>
+      <vaadin-date-picker slot="date-picker"></vaadin-date-picker>
+      <vaadin-time-picker slot="time-picker"></vaadin-time-picker>
+    </vaadin-date-time-picker>
+  `,
+  'lazy-inputs': `
+    <vaadin-date-time-picker>
+      <vaadin-date-picker slot="setAfterReady"></vaadin-date-picker>
+      <vaadin-time-picker slot="setAfterReady"></vaadin-time-picker>
+    </vaadin-date-time-picker>
+  `,
+  'default-values': `
+    <vaadin-date-time-picker>
+      <vaadin-date-picker slot="date-picker" value="2019-09-16"></vaadin-date-picker>
+      <vaadin-time-picker slot="time-picker" value="15:00"></vaadin-time-picker>
+    </vaadin-date-time-picker>
+  `,
+  'lazy-values': `
+    <vaadin-date-time-picker>
+      <vaadin-date-picker slot="setAfterReady" value="2019-09-16"></vaadin-date-picker>
+      <vaadin-time-picker slot="setAfterReady" value="15:00"></vaadin-time-picker>
+    </vaadin-date-time-picker>
+  `
+};
 
 describe('Basic features', () => {
   let dateTimePicker;
@@ -94,10 +38,14 @@ describe('Basic features', () => {
   let timePicker;
 
   beforeEach(() => {
-    dateTimePicker = fixture('default');
+    dateTimePicker = fixtureSync('<vaadin-date-time-picker></vaadin-date-time-picker>');
     customField = dateTimePicker.$.customField;
     datePicker = customField.inputs[0];
     timePicker = customField.inputs[1];
+  });
+
+  afterEach(() => {
+    dateTimePicker.remove();
   });
 
   it('should not expose class name globally', () => {
@@ -126,11 +74,11 @@ describe('Basic features', () => {
     const spy = sinon.spy();
     dateTimePicker.addEventListener('value-changed', spy);
     dateTimePicker.value = '2019-09-19T08:26';
-    expect(spy).to.have.been.calledOnce;
+    expect(spy.calledOnce).to.be.true;
 
-    spy.reset();
+    spy.resetHistory();
     dateTimePicker.value = '';
-    expect(spy).to.have.been.calledOnce;
+    expect(spy.calledOnce).to.be.true;
   });
 
   it('should get value from custom field', () => {
@@ -145,17 +93,7 @@ describe('Basic features', () => {
     expect(datePicker.hasAttribute('focused')).to.be.true;
   });
 
-  it('should focus date picker when autofocus is set', done => {
-    dateTimePicker = fixture('autofocus');
-    datePicker = dateTimePicker.__datePicker;
-    requestAnimationFrame(() => {
-      expect(datePicker.hasAttribute('focused')).to.be.true;
-      done();
-    });
-  });
-
   describe('change event', () => {
-
     let spy;
 
     beforeEach(() => {
@@ -165,45 +103,44 @@ describe('Basic features', () => {
 
     it('should fire change on date picker change event', () => {
       changeInputValue(timePicker, '16:00');
-      expect(spy).to.not.have.been.called;
+      expect(spy.called).to.be.false;
       changeInputValue(datePicker, '2020-01-17');
-      expect(spy).to.have.been.calledOnce;
+      expect(spy.calledOnce).to.be.true;
       changeInputValue(datePicker, '');
-      expect(spy).to.have.been.calledTwice;
+      expect(spy.calledTwice).to.be.true;
     });
 
     it('should fire change on time picker change event', () => {
       changeInputValue(datePicker, '2020-01-17');
-      expect(spy).to.not.have.been.called;
+      expect(spy.called).to.be.false;
       changeInputValue(timePicker, '16:00');
-      expect(spy).to.have.been.calledOnce;
+      expect(spy.calledOnce).to.be.true;
       changeInputValue(timePicker, '');
-      expect(spy).to.have.been.calledTwice;
+      expect(spy.calledTwice).to.be.true;
     });
 
     it('should not fire change on programmatic value change', () => {
       dateTimePicker.value = '2020-01-17T16:00';
-      expect(spy).to.not.have.been.called;
+      expect(spy.called).to.be.false;
     });
 
     it('should not fire change on programmatic value change after manual one', () => {
       dateTimePicker.value = '2020-01-17T16:00'; // Init with valid value
       changeInputValue(datePicker, '2020-01-20');
-      spy.reset();
+      spy.resetHistory();
       dateTimePicker.value = '2020-01-10T12:00';
-      expect(spy).to.not.have.been.called;
+      expect(spy.called).to.be.false;
     });
 
     it('should not fire change on programmatic value change after partial manual one', () => {
       changeInputValue(datePicker, '2020-01-17');
       // Time picker has no value so date time picker value is still empty
       dateTimePicker.value = '2020-01-17T16:00';
-      expect(spy).to.not.have.been.called;
+      expect(spy.called).to.be.false;
     });
   });
 
   describe('value property formats', () => {
-
     it('should accept ISO format', () => {
       var date = new Date(0, 1, 3, 8, 30, 0);
 
@@ -250,7 +187,7 @@ describe('Basic features', () => {
       dateTimePicker.__selectedDateTime = date;
       expect(dateTimePicker.value).to.equal('0000-02-03T08:30:00');
 
-      dateTimePicker.step = .001;
+      dateTimePicker.step = 0.001;
       expect(dateTimePicker.value).to.equal('0000-02-03T08:30:00.000');
       // test that format stays even after setting the value again
       dateTimePicker.value = '';
@@ -263,7 +200,7 @@ describe('Basic features', () => {
       expect(dateTimePicker.value).to.equal('+010000-02-03T08:30');
       dateTimePicker.step = 1;
       expect(dateTimePicker.value).to.equal('+010000-02-03T08:30:00');
-      dateTimePicker.step = .001;
+      dateTimePicker.step = 0.001;
       expect(dateTimePicker.value).to.equal('+010000-02-03T08:30:00.000');
 
       date.setFullYear(-10000);
@@ -272,19 +209,36 @@ describe('Basic features', () => {
       expect(dateTimePicker.value).to.equal('-010000-02-03T08:30');
       dateTimePicker.step = 1;
       expect(dateTimePicker.value).to.equal('-010000-02-03T08:30:00');
-      dateTimePicker.step = .001;
+      dateTimePicker.step = 0.001;
       expect(dateTimePicker.value).to.equal('-010000-02-03T08:30:00.000');
     });
 
     it('should allow millisecond precision values', () => {
-      dateTimePicker.step = .5;
+      dateTimePicker.step = 0.5;
       const testValue = '2020-01-09T12:34:56.789';
       dateTimePicker.value = testValue;
       expect(dateTimePicker.value).to.equal(testValue);
     });
+  });
+});
 
+describe('autofocus', () => {
+  let dateTimePicker;
+  let datePicker;
+
+  beforeEach(async () => {
+    dateTimePicker = fixtureSync('<vaadin-date-time-picker autofocus></vaadin-date-time-picker>');
+    datePicker = dateTimePicker.$.customField.inputs[0];
+    await nextFrame();
   });
 
+  afterEach(() => {
+    dateTimePicker.remove();
+  });
+
+  it('should focus date picker when autofocus is set', () => {
+    expect(datePicker.hasAttribute('focused')).to.be.true;
+  });
 });
 
 describe('Initial value', () => {
@@ -292,32 +246,56 @@ describe('Initial value', () => {
   let customField;
 
   beforeEach(() => {
-    dateTimePicker = fixture('initial-value');
+    dateTimePicker = fixtureSync('<vaadin-date-time-picker value="2019-09-16T15:00"></vaadin-date-time-picker>');
     customField = dateTimePicker.$.customField;
+  });
+
+  afterEach(() => {
+    dateTimePicker.remove();
   });
 
   it('should use initial value from attribute without clearing it', () => {
     expect(dateTimePicker.value).to.equal('2019-09-16T15:00');
     expect(customField.value).to.equal('2019-09-16T15:00');
   });
-
 });
 
 describe('helperText', () => {
   let dateTimePicker;
 
-  beforeEach(() => dateTimePicker = fixture('default'));
+  beforeEach(() => {
+    dateTimePicker = fixtureSync('<vaadin-date-time-picker></vaadin-date-time-picker>');
+  });
+
+  afterEach(() => {
+    dateTimePicker.remove();
+  });
 
   it('should display the helper text when provided', () => {
     dateTimePicker.helperText = 'Foo';
     expect(dateTimePicker.$.customField.helperText).to.equal(dateTimePicker.helperText);
   });
+});
+
+describe('slotted helper', () => {
+  let dateTimePicker;
+  let customField;
+
+  beforeEach(() => {
+    dateTimePicker = fixtureSync(`
+      <vaadin-date-time-picker>
+        <div slot="helper">foo</div>
+      </vaadin-date-time-picker>
+    `);
+    customField = dateTimePicker.$.customField;
+  });
+
+  afterEach(() => {
+    dateTimePicker.remove();
+  });
 
   it('should display the helper text when slotted helper available', () => {
-    const dateTimePicker = fixture(`dtp-with-slotted-helper`);
-    const evt = new CustomEvent('slotchange');
-    dateTimePicker.shadowRoot.querySelector('[name="helper"]').dispatchEvent(evt);
-    expect(dateTimePicker.$.customField.querySelector('[slot="helper"]').assignedNodes()[0].textContent).to.eql('foo');
+    expect(customField.querySelector('[slot="helper"]').assignedNodes()[0].textContent).to.eql('foo');
   });
 });
 
@@ -328,10 +306,14 @@ describe('Theme attribute', () => {
   let timePicker;
 
   beforeEach(() => {
-    dateTimePicker = fixture('theme-attribute');
+    dateTimePicker = fixtureSync('<vaadin-date-time-picker theme="foo"></vaadin-date-time-picker>');
     customField = dateTimePicker.$.customField;
     datePicker = customField.inputs[0];
     timePicker = customField.inputs[1];
+  });
+
+  afterEach(() => {
+    dateTimePicker.remove();
   });
 
   it('should propagate theme attribute to custom-field', () => {
@@ -345,33 +327,31 @@ describe('Theme attribute', () => {
   it('should propagate theme attribute to time-picker', () => {
     expect(timePicker.getAttribute('theme')).to.equal('foo');
   });
-
 });
 
-['default', 'lazy'].forEach(set => {
+['default', 'lazy'].forEach((set) => {
   describe(`Slotted inputs (${set})`, () => {
     let dateTimePicker;
     let customField;
     let datePicker;
     let timePicker;
 
-    beforeEach(done => {
-      if (set === 'default') {
-        dateTimePicker = fixture('slotted-inputs');
-      } else if (set === 'lazy') {
-        dateTimePicker = fixture('lazy-slotted-inputs');
-      }
+    beforeEach(async () => {
+      dateTimePicker = fixtureSync(fixtures[`${set}-inputs`]);
       customField = dateTimePicker.$.customField;
       datePicker = dateTimePicker.querySelector('vaadin-date-picker');
       timePicker = dateTimePicker.querySelector('vaadin-time-picker');
+
       if (set === 'lazy') {
         // Assign the slots lazily simulating the case if Flow adds the slotted elements after date time picker is ready
         datePicker.slot = 'date-picker';
         timePicker.slot = 'time-picker';
-        setTimeout(() => done(), 0);
-      } else {
-        done();
+        await aTimeout(0);
       }
+    });
+
+    afterEach(() => {
+      dateTimePicker.remove();
     });
 
     it('should have correct inputs set in custom-field', () => {
@@ -424,47 +404,40 @@ describe('Theme attribute', () => {
     });
 
     describe('Removing change listeners', () => {
-
-      it('should remove change listener from removed date picker', done => {
+      it('should remove change listener from removed date picker', async () => {
         dateTimePicker.removeChild(datePicker); // Remove slotted date picker
-        setTimeout(() => {
-          changeInputValue(datePicker, '2019-09-16');
-          expect(dateTimePicker.__doDispatchChange).to.be.not.true;
-          done();
-        }, 0);
+        await aTimeout(0);
+        changeInputValue(datePicker, '2019-09-16');
+        expect(dateTimePicker.__doDispatchChange).to.be.not.true;
       });
 
-      it('should remove change listener from removed time picker', done => {
+      it('should remove change listener from removed time picker', async () => {
         dateTimePicker.removeChild(timePicker); // Remove slotted time picker
-        setTimeout(() => {
-          changeInputValue(timePicker, '15:00');
-          expect(dateTimePicker.__doDispatchChange).to.be.not.true;
-          done();
-        }, 0);
+        await aTimeout(0);
+        changeInputValue(timePicker, '15:00');
+        expect(dateTimePicker.__doDispatchChange).to.be.not.true;
       });
-
     });
   });
-});
 
-['default', 'lazy'].forEach(set => {
   describe(`Initial value from slotted inputs (${set})`, () => {
     let dateTimePicker;
     let customField;
 
-    beforeEach(done => {
-      if (set === 'default') {
-        dateTimePicker = fixture('slotted-values');
-        customField = dateTimePicker.$.customField;
-        done();
-      } else if (set === 'lazy') {
-        dateTimePicker = fixture('lazy-slotted-values');
-        customField = dateTimePicker.$.customField;
+    beforeEach(async () => {
+      dateTimePicker = fixtureSync(fixtures[`${set}-values`]);
+      customField = dateTimePicker.$.customField;
+
+      if (set === 'lazy') {
         // Assign the slots lazily simulating the case if Flow adds the slotted elements after date time picker is ready
         dateTimePicker.querySelector('vaadin-date-picker').slot = 'date-picker';
         dateTimePicker.querySelector('vaadin-time-picker').slot = 'time-picker';
-        setTimeout(() => done(), 0);
+        await aTimeout(0);
       }
+    });
+
+    afterEach(() => {
+      dateTimePicker.remove();
     });
 
     // This test simulates how DatePicker sets the initial value from server side
@@ -472,8 +445,5 @@ describe('Theme attribute', () => {
       expect(customField.value).to.equal('2019-09-16T15:00');
       expect(dateTimePicker.value).to.equal('2019-09-16T15:00');
     });
-
   });
 });
-</script>
-</body>
