@@ -4,8 +4,8 @@ Copyright (c) 2019 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
 import { DatePickerElement } from '@vaadin/vaadin-date-picker/src/vaadin-date-picker.js';
-
 import './vaadin-date-time-picker-date-text-field.js';
+
 let memoizedTemplate;
 
 /**
