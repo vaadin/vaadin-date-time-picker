@@ -1,8 +1,8 @@
 /**
-@license
-Copyright (c) 2019 Vaadin Ltd.
-This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
-*/
+ * @license
+ * Copyright (c) 2020 Vaadin Ltd.
+ * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+ */
 import { TimePickerElement } from '@vaadin/vaadin-time-picker/src/vaadin-time-picker.js';
 import './vaadin-date-time-picker-time-text-field.js';
 

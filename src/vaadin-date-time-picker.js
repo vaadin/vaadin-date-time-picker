@@ -1,8 +1,8 @@
 /**
-@license
-Copyright (c) 2019 Vaadin Ltd.
-This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
-*/
+ * @license
+ * Copyright (c) 2020 Vaadin Ltd.
+ * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+ */
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import { DatePickerHelper } from '@vaadin/vaadin-date-picker/src/vaadin-date-picker-helper.js';
 import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
