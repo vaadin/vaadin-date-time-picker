@@ -1,10 +1,6 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
-
 import {ElementMixin} from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
 
 import {ThemableMixin} from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
-
-import {html} from '@polymer/polymer/lib/utils/html-tag.js';
 
 /**
  * `<vaadin-date-time-picker>` is a Web Component providing a date time selection field.
@@ -56,7 +52,7 @@ import {html} from '@polymer/polymer/lib/utils/html-tag.js';
 declare class DateTimePicker extends
   ElementMixin(
   ThemableMixin(
-  PolymerElement)) {
+  HTMLElement)) {
 
   /**
    * The name of the control, which is submitted with the form data.

@@ -99,7 +99,7 @@ const timePickerI18nProps = Object.keys(timePickerI18nDefaults);
  * Note: the `theme` attribute value set on `<vaadin-date-time-picker>` is
  * propagated to the internal themable components listed above.
  *
- * @extends PolymerElement
+ * @extends HTMLElement
  * @mixes ElementMixin
  * @mixes ThemableMixin
  */
