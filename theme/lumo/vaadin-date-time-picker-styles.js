@@ -1,8 +1,9 @@
-<link rel="import" href="../../../vaadin-custom-field/theme/lumo/vaadin-custom-field.html">
-<link rel="import" href="../../../vaadin-date-picker/theme/lumo/vaadin-date-picker.html">
-<link rel="import" href="../../../vaadin-time-picker/theme/lumo/vaadin-time-picker.html">
+import '@vaadin/vaadin-custom-field/theme/lumo/vaadin-custom-field.js';
+import '@vaadin/vaadin-date-picker/theme/lumo/vaadin-date-picker.js';
+import '@vaadin/vaadin-time-picker/theme/lumo/vaadin-time-picker.js';
+import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 
-<dom-module id="lumo-date-time-picker-date-text-field" theme-for="vaadin-date-time-picker-date-text-field">
+const $_documentContainer = html`<dom-module id="lumo-date-time-picker-date-text-field" theme-for="vaadin-date-time-picker-date-text-field">
   <template>
     <style>
       [part~="input-field"] {
@@ -18,9 +19,7 @@
       }
     </style>
   </template>
-</dom-module>
-
-<dom-module id="lumo-date-time-picker-time-text-field" theme-for="vaadin-date-time-picker-time-text-field">
+</dom-module><dom-module id="lumo-date-time-picker-time-text-field" theme-for="vaadin-date-time-picker-time-text-field">
   <template>
     <style>
       [part~="input-field"] {
@@ -36,9 +35,7 @@
       }
     </style>
   </template>
-</dom-module>
-
-<dom-module id="lumo-date-time-picker-date-picker" theme-for="vaadin-date-time-picker-date-picker">
+</dom-module><dom-module id="lumo-date-time-picker-date-picker" theme-for="vaadin-date-time-picker-date-picker">
   <template>
     <style>
       :host {
@@ -52,4 +49,6 @@
       }
     </style>
   </template>
-</dom-module>
+</dom-module>`;
+
+document.head.appendChild($_documentContainer.content);

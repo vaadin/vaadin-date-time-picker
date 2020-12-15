@@ -3,19 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>vaadin-date-time-picker tests</title>
-  <script src="../../web-component-tester/browser.js"></script>
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="../../polymer/lib/elements/dom-bind.html">
-  <link rel="import" href="../../test-fixture/test-fixture.html">
-  <link rel="import" href="../vaadin-date-time-picker.html">
-  <script src="common.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script type="module" src="../../../@polymer/polymer/lib/elements/dom-bind.js"></script>
+  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
+  <script type="module" src="../vaadin-date-time-picker.js"></script>
+  <script src="./common.js"></script>
 </head>
 
 <body>
-  <script>
-    window.__formatTime = (...args) => customElements.get('vaadin-time-picker').properties.i18n.value().formatTime(...args);
-    window.__parseTime = (...args) => customElements.get('vaadin-time-picker').properties.i18n.value().parseTime(...args);
-  </script>
+  <script type="module">
+import '@polymer/polymer/lib/elements/dom-bind.js';
+import '@polymer/test-fixture/test-fixture.js';
+import '../vaadin-date-time-picker.js';
+window.__formatTime = (...args) => customElements.get('vaadin-time-picker').properties.i18n.value().formatTime(...args);
+window.__parseTime = (...args) => customElements.get('vaadin-time-picker').properties.i18n.value().parseTime(...args);
+</script>
 
   <test-fixture id="default">
     <template>
@@ -71,45 +74,48 @@
     </template>
   </test-fixture>
 
-  <script>
-    ['default', 'slotted'].forEach(set => {
-      describe(`i18n property (${set})`, () => {
-        let dateTimePicker;
-        let customField;
-        let datePicker;
-        let timePicker;
+  <script type="module">
+import '@polymer/polymer/lib/elements/dom-bind.js';
+import '@polymer/test-fixture/test-fixture.js';
+import '../vaadin-date-time-picker.js';
+['default', 'slotted'].forEach(set => {
+  describe(`i18n property (${set})`, () => {
+    let dateTimePicker;
+    let customField;
+    let datePicker;
+    let timePicker;
 
-        // No need for "beforeEach" to recreate the fixture before every test since these tests do not
-        // modify the state but only check the initial state.
-        before(() => {
-          if (set === 'default') {
-            const domBind = fixture(set)[0];
-            dateTimePicker = domBind.$.dateTimePicker;
-            customField = dateTimePicker.$.customField;
-            datePicker = customField.inputs[0];
-            timePicker = customField.inputs[1];
-          } else if (set === 'slotted') {
-            const domBind = fixture(set)[0];
-            dateTimePicker = domBind.$.dateTimePicker;
-            customField = dateTimePicker.$.customField;
-            datePicker = dateTimePicker.querySelector('[slot="date-picker"]');
-            timePicker = dateTimePicker.querySelector('[slot="time-picker"]');
-          }
-        });
-
-        it('should have initial value for i18n', () => {
-          expect(dateTimePicker.i18n).to.have.property('clear', 'Tyhjennä');
-          expect(datePicker.i18n).to.have.property('clear', 'Tyhjennä');
-          expect(timePicker.i18n).to.have.property('clear', 'Tyhjennä');
-
-          expect(dateTimePicker.i18n).to.have.property('cancel', 'Peruuta');
-          expect(datePicker.i18n).to.have.property('cancel', 'Peruuta');
-
-          expect(dateTimePicker.i18n).to.have.property('selector', 'Ajan valitsin');
-          expect(timePicker.i18n).to.have.property('selector', 'Ajan valitsin');
-        });
-
-      });
+    // No need for "beforeEach" to recreate the fixture before every test since these tests do not
+    // modify the state but only check the initial state.
+    before(() => {
+      if (set === 'default') {
+        const domBind = fixture(set)[0];
+        dateTimePicker = domBind.$.dateTimePicker;
+        customField = dateTimePicker.$.customField;
+        datePicker = customField.inputs[0];
+        timePicker = customField.inputs[1];
+      } else if (set === 'slotted') {
+        const domBind = fixture(set)[0];
+        dateTimePicker = domBind.$.dateTimePicker;
+        customField = dateTimePicker.$.customField;
+        datePicker = dateTimePicker.querySelector('[slot="date-picker"]');
+        timePicker = dateTimePicker.querySelector('[slot="time-picker"]');
+      }
     });
-  </script>
+
+    it('should have initial value for i18n', () => {
+      expect(dateTimePicker.i18n).to.have.property('clear', 'Tyhjennä');
+      expect(datePicker.i18n).to.have.property('clear', 'Tyhjennä');
+      expect(timePicker.i18n).to.have.property('clear', 'Tyhjennä');
+
+      expect(dateTimePicker.i18n).to.have.property('cancel', 'Peruuta');
+      expect(datePicker.i18n).to.have.property('cancel', 'Peruuta');
+
+      expect(dateTimePicker.i18n).to.have.property('selector', 'Ajan valitsin');
+      expect(timePicker.i18n).to.have.property('selector', 'Ajan valitsin');
+    });
+
+  });
+});
+</script>
 </body>
