@@ -2,6 +2,8 @@ import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.
 
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 
+import { DateTimePickerI18n } from './interfaces';
+
 /**
  * `<vaadin-date-time-picker>` is a Web Component providing a date time selection field.
  *
@@ -190,8 +192,6 @@ declare class DateTimePicker extends ElementMixin(ThemableMixin(HTMLElement)) {
    * - [`time-picker` documentation](https://vaadin.com/components/vaadin-time-picker/html-api/elements/Vaadin.TimePickerElement)
    */
   i18n: DateTimePickerI18n;
-  ready(): void;
-  focus(): void;
 
   /**
    * Returns true if `value` is valid, and sets the `invalid` flag appropriately.
@@ -215,5 +215,3 @@ declare global {
 }
 
 export { DateTimePicker };
-
-import { DateTimePickerI18n } from '../@types/interfaces';
