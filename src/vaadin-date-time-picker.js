@@ -87,7 +87,7 @@ const timePickerI18nProps = Object.keys(timePickerI18nDefaults);
  * @mixes ElementMixin
  * @mixes ThemableMixin
  */
-class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
+class DateTimePickerElement extends ElementMixin(ThemableMixin(PolymerElement)) {
   static get template() {
     return html`
       <style>
@@ -1008,6 +1008,6 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
    */
 }
 
-customElements.define(DateTimePicker.is, DateTimePicker);
+customElements.define(DateTimePickerElement.is, DateTimePickerElement);
 
-export { DateTimePicker };
+export { DateTimePickerElement };

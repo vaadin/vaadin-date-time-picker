@@ -49,7 +49,7 @@ describe('Basic features', () => {
   });
 
   it('should not expose class name globally', () => {
-    expect(window.DateTimePicker).not.to.be.ok;
+    expect(window.DateTimePickerElement).not.to.be.ok;
   });
 
   it('should have a valid version number', () => {

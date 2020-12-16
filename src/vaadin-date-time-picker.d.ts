@@ -51,7 +51,7 @@ import { DateTimePickerI18n } from './interfaces';
  * Note: the `theme` attribute value set on `<vaadin-date-time-picker>` is
  * propagated to the internal themable components listed above.
  */
-declare class DateTimePicker extends ElementMixin(ThemableMixin(HTMLElement)) {
+declare class DateTimePickerElement extends ElementMixin(ThemableMixin(HTMLElement)) {
   /**
    * The name of the control, which is submitted with the form data.
    */
@@ -210,8 +210,8 @@ declare class DateTimePicker extends ElementMixin(ThemableMixin(HTMLElement)) {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'vaadin-date-time-picker': DateTimePicker;
+    'vaadin-date-time-picker': DateTimePickerElement;
   }
 }
 
-export { DateTimePicker };
+export { DateTimePickerElement };
