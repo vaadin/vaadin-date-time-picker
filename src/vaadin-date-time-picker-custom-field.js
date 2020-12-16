@@ -4,6 +4,18 @@
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
 import { CustomFieldElement } from '@vaadin/vaadin-custom-field/src/vaadin-custom-field.js';
+import { registerStyles, css } from '@vaadin/vaadin-themable-mixin/register-styles.js';
+
+registerStyles(
+  'vaadin-date-time-picker-custom-field',
+  css`
+    :host,
+    .container {
+      width: 100%;
+    }
+  `,
+  { moduleId: 'vaadin-date-time-picker-custom-field' }
+);
 
 /**
   * The custom-field element.

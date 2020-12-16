@@ -11,21 +11,6 @@ import './vaadin-date-time-picker-custom-field.js';
 import './vaadin-date-time-picker-date-picker.js';
 import './vaadin-date-time-picker-time-picker.js';
 
-const $_documentContainer = document.createElement('template');
-
-$_documentContainer.innerHTML = `<dom-module id="date-time-picker-custom-field" theme-for="vaadin-date-time-picker-custom-field">
-  <template>
-    <style>
-      :host,
-      .container {
-        width: 100%;
-      }
-    </style>
-  </template>
-</dom-module>`;
-
-document.head.appendChild($_documentContainer.content);
-
 /**
  * @typedef {object} TimePickerTime
  * @property {string | number} hours
