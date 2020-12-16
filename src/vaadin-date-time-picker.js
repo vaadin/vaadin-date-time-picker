@@ -4,7 +4,7 @@
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import { DatePickerHelper } from '@vaadin/vaadin-date-picker/src/vaadin-date-picker-helper.js';
+import { dateEquals } from '@vaadin/vaadin-date-picker/src/vaadin-date-picker-helper.js';
 import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 import './vaadin-date-time-picker-custom-field.js';
@@ -572,7 +572,6 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
   /** @private */
   __updateTimePickerMinMax() {
     if (this.__timePicker && this.__datePicker) {
-      const dateEquals = DatePickerHelper._dateEquals;
       const selectedDate = this.__parseDate(this.__datePicker.value);
       const isMinMaxSameDay = dateEquals(this.__minDateTime, this.__maxDateTime);
       const oldTimeValue = this.__timePicker.value;
@@ -872,7 +871,7 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
    * @private
    */
   __dateTimeEquals(date1, date2) {
-    if (!DatePickerHelper._dateEquals(date1, date2)) {
+    if (!dateEquals(date1, date2)) {
       return false;
     }
     return (
