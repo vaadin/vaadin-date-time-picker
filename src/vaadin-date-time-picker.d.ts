@@ -2,7 +2,7 @@ import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.
 
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 
-import { DateTimePickerI18n } from './interfaces';
+import { DateTimePickerEventMap, DateTimePickerI18n } from './interfaces';
 
 /**
  * `<vaadin-date-time-picker>` is a Web Component providing a date time selection field.
@@ -50,6 +50,10 @@ import { DateTimePickerI18n } from './interfaces';
  *
  * Note: the `theme` attribute value set on `<vaadin-date-time-picker>` is
  * propagated to the internal themable components listed above.
+ *
+ * @fires {Event} change - Fired when the user commits a value change.
+ * @fires {CustomEvent} invalid-changed - Fired when the `invalid` property changes.
+ * @fires {CustomEvent} value-changed - Fired when the `value` property changes.
  */
 declare class DateTimePickerElement extends ElementMixin(ThemableMixin(HTMLElement)) {
   /**
@@ -206,6 +210,18 @@ declare class DateTimePickerElement extends ElementMixin(ThemableMixin(HTMLEleme
    * You can override the `checkValidity` method for custom validations.
    */
   checkValidity(): boolean;
+
+  addEventListener<K extends keyof DateTimePickerEventMap>(
+    type: K,
+    listener: (this: DateTimePickerElement, ev: DateTimePickerEventMap[K]) => void,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+
+  removeEventListener<K extends keyof DateTimePickerEventMap>(
+    type: K,
+    listener: (this: DateTimePickerElement, ev: DateTimePickerEventMap[K]) => void,
+    options?: boolean | EventListenerOptions
+  ): void;
 }
 
 declare global {
