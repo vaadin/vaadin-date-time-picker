@@ -1,6 +1,6 @@
-import {ElementMixin} from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
+import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
 
-import {ThemableMixin} from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
+import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 
 /**
  * `<vaadin-date-time-picker>` is a Web Component providing a date time selection field.
@@ -49,15 +49,11 @@ import {ThemableMixin} from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin
  * Note: the `theme` attribute value set on `<vaadin-date-time-picker>` is
  * propagated to the internal themable components listed above.
  */
-declare class DateTimePicker extends
-  ElementMixin(
-  ThemableMixin(
-  HTMLElement)) {
-
+declare class DateTimePicker extends ElementMixin(ThemableMixin(HTMLElement)) {
   /**
    * The name of the control, which is submitted with the form data.
    */
-  name: string|null|undefined;
+  name: string | null | undefined;
 
   /**
    * Set to true if the value is invalid.
@@ -73,7 +69,7 @@ declare class DateTimePicker extends
    * The error message to display when the input is invalid.
    * @attr {string} error-message
    */
-  errorMessage: string|null|undefined;
+  errorMessage: string | null | undefined;
 
   /**
    * The value for this element.
@@ -93,7 +89,7 @@ declare class DateTimePicker extends
    * - Second precision `"YYYY-MM-DDThh:mm:ss"`
    * - Millisecond precision `"YYYY-MM-DDThh:mm:ss.fff"`
    */
-  min: string|undefined;
+  min: string | undefined;
 
   /**
    * The latest value (date and time) that can be selected. All later values will be disabled.
@@ -103,25 +99,25 @@ declare class DateTimePicker extends
    * - Second precision `"YYYY-MM-DDThh:mm:ss"`
    * - Millisecond precision `"YYYY-MM-DDThh:mm:ss.fff"`
    */
-  max: string|undefined;
+  max: string | undefined;
 
   /**
    * A placeholder string for the date field.
    * @attr {string} date-placeholder
    */
-  datePlaceholder: string|null|undefined;
+  datePlaceholder: string | null | undefined;
 
   /**
    * A placeholder string for the time field.
    * @attr {string} time-placeholder
    */
-  timePlaceholder: string|null|undefined;
+  timePlaceholder: string | null | undefined;
 
   /**
    * String used for the helper text.
    * @attr {string} helper-text
    */
-  helperText: string|null|undefined;
+  helperText: string | null | undefined;
 
   /**
    * Specifies the number of valid intervals in a day used for
@@ -139,7 +135,7 @@ declare class DateTimePicker extends
    * fragments (i.e. 5760 seconds which equals 1 hour 36 minutes), but it is
    * not recommended to use it for better UX.
    */
-  step: number|null|undefined;
+  step: number | null | undefined;
 
   /**
    * Date which should be visible in the date picker overlay when there is no value selected.
@@ -147,7 +143,7 @@ declare class DateTimePicker extends
    * The same date formats as for the `value` property are supported but without the time part.
    * @attr {string} initial-position
    */
-  initialPosition: string|null|undefined;
+  initialPosition: string | null | undefined;
 
   /**
    * Set true to display ISO-8601 week numbers in the calendar. Notice that
@@ -155,7 +151,7 @@ declare class DateTimePicker extends
    * is 1 (Monday).
    * @attr {boolean} show-week-numbers
    */
-  showWeekNumbers: boolean|null|undefined;
+  showWeekNumbers: boolean | null | undefined;
 
   /**
    * String used for the label element.
@@ -166,7 +162,7 @@ declare class DateTimePicker extends
    * Set to true to prevent the overlays from opening automatically.
    * @attr {boolean} auto-open-disabled
    */
-  autoOpenDisabled: boolean|null|undefined;
+  autoOpenDisabled: boolean | null | undefined;
 
   /**
    * Set to true to disable this element.
@@ -213,12 +209,11 @@ declare class DateTimePicker extends
 }
 
 declare global {
-
   interface HTMLElementTagNameMap {
-    "vaadin-date-time-picker": DateTimePicker;
+    'vaadin-date-time-picker': DateTimePicker;
   }
 }
 
-export {DateTimePicker};
+export { DateTimePicker };
 
-import {DateTimePickerI18n} from '../@types/interfaces';
+import { DateTimePickerI18n } from '../@types/interfaces';

@@ -20,7 +20,7 @@ import './vaadin-date-time-picker-time-picker.js';
  */
 
 // Find a property definition from the prototype chain of a Polymer element class
-const getPropertyFromPrototype = function(clazz, prop) {
+const getPropertyFromPrototype = function (clazz, prop) {
   while (clazz) {
     if (clazz.properties && clazz.properties[prop]) {
       return clazz.properties[prop];
@@ -90,45 +90,57 @@ const timePickerI18nProps = Object.keys(timePickerI18nDefaults);
 class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
   static get template() {
     return html`
-    <style>
-      :host {
-        display: inline-block;
-      }
+      <style>
+        :host {
+          display: inline-block;
+        }
 
-      :host([hidden]) {
-        display: none !important;
-      }
+        :host([hidden]) {
+          display: none !important;
+        }
 
-      .slot-container {
-        display: flex;
-      }
+        .slot-container {
+          display: flex;
+        }
 
-      [part="date"],
-      .slot-container ::slotted([slot="date-picker"]) {
-        pointer-events: all;
-        min-width: 0;
-        flex: 1 1 auto;
-      }
+        [part='date'],
+        .slot-container ::slotted([slot='date-picker']) {
+          pointer-events: all;
+          min-width: 0;
+          flex: 1 1 auto;
+        }
 
-      [part="time"],
-      .slot-container ::slotted([slot="time-picker"]) {
-        pointer-events: all;
-        min-width: 0;
-        flex: 1 1.65 auto;
-      }
-    </style>
-    <vaadin-date-time-picker-custom-field id="customField" on-value-changed="__customFieldValueChanged" i18n="[[__customFieldValueFormat]]" label="[[label]]" theme\$="[[theme]]" invalid="[[invalid]]" required="[[required]]" disabled\$="[[disabled]]" readonly\$="[[readonly]]" error-message="[[errorMessage]]" helper-text="[[helperText]]">
-      <div class="slot-container">
-        <slot name="date-picker" id="dateSlot">
-          <vaadin-date-time-picker-date-picker part="date" theme\$="[[theme]]"></vaadin-date-time-picker-date-picker>
-        </slot>
-        <slot name="time-picker" id="timeSlot">
-          <vaadin-date-time-picker-time-picker part="time" theme\$="[[theme]]"></vaadin-date-time-picker-time-picker>
-        </slot>
-      </div>
-      <slot name="helper" slot="helper">[[helperText]]</slot>
-    </vaadin-date-time-picker-custom-field>
-`;
+        [part='time'],
+        .slot-container ::slotted([slot='time-picker']) {
+          pointer-events: all;
+          min-width: 0;
+          flex: 1 1.65 auto;
+        }
+      </style>
+      <vaadin-date-time-picker-custom-field
+        id="customField"
+        on-value-changed="__customFieldValueChanged"
+        i18n="[[__customFieldValueFormat]]"
+        label="[[label]]"
+        theme$="[[theme]]"
+        invalid="[[invalid]]"
+        required="[[required]]"
+        disabled$="[[disabled]]"
+        readonly$="[[readonly]]"
+        error-message="[[errorMessage]]"
+        helper-text="[[helperText]]"
+      >
+        <div class="slot-container">
+          <slot name="date-picker" id="dateSlot">
+            <vaadin-date-time-picker-date-picker part="date" theme$="[[theme]]"></vaadin-date-time-picker-date-picker>
+          </slot>
+          <slot name="time-picker" id="timeSlot">
+            <vaadin-date-time-picker-time-picker part="time" theme$="[[theme]]"></vaadin-date-time-picker-time-picker>
+          </slot>
+        </div>
+        <slot name="helper" slot="helper">[[helperText]]</slot>
+      </vaadin-date-time-picker-custom-field>
+    `;
   }
 
   static get is() {
@@ -355,8 +367,8 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
       __customFieldValueFormat: {
         type: Object,
         value: () => ({
-          parseValue: combinedValue => combinedValue.split('T'),
-          formatValue: inputValues => inputValues.join('T')
+          parseValue: (combinedValue) => combinedValue.split('T'),
+          formatValue: (inputValues) => inputValues.join('T')
         })
       },
 
@@ -409,14 +421,14 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
   ready() {
     super.ready();
 
-    this.addEventListener('focusout', e => {
+    this.addEventListener('focusout', (e) => {
       if (e.relatedTarget !== this.__datePicker.$.overlay) {
         this.validate();
       }
     });
 
     this.__changeEventHandler = this.__changeEventHandler.bind(this);
-    this.__filterElements = node => node.nodeType === Node.ELEMENT_NODE;
+    this.__filterElements = (node) => node.nodeType === Node.ELEMENT_NODE;
 
     this.__datePickerChanged();
     this.__timePickerChanged();
@@ -437,7 +449,8 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
   /** @private */
   __syncI18n(target, source, props) {
     props = props || Object.keys(source.i18n);
-    props.forEach(prop => {
+    props.forEach((prop) => {
+      // eslint-disable-next-line no-prototype-builtins
       if (source.i18n && source.i18n.hasOwnProperty(prop)) {
         target.set(`i18n.${prop}`, source.i18n[prop]);
       }
@@ -450,15 +463,17 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
   /** @private */
   __updateCustomFieldInputs() {
     const cfInputs = this.$.customField.inputs;
-    if (this.__datePicker && this.__timePicker
-        && (cfInputs[0] !== this.__datePicker || cfInputs[1] !== this.__timePicker)
+    if (
+      this.__datePicker &&
+      this.__timePicker &&
+      (cfInputs[0] !== this.__datePicker || cfInputs[1] !== this.__timePicker)
     ) {
       this.$.customField._setInputs([this.__datePicker, this.__timePicker]);
     }
   }
 
   /** @private */
-  __changeEventHandler(event) {
+  __changeEventHandler() {
     this.__doDispatchChange = true;
   }
 
@@ -477,7 +492,7 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
   /** @private */
   __datePickerChanged() {
     const defaultDatePicker = this.shadowRoot.querySelector('[part="date"]');
-    const assignedElements = this.$.dateSlot.assignedNodes({flatten: true}).filter(this.__filterElements);
+    const assignedElements = this.$.dateSlot.assignedNodes({ flatten: true }).filter(this.__filterElements);
     const datePicker = assignedElements[0];
     if (this.__datePicker === datePicker) {
       return;
@@ -519,7 +534,7 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
   /** @private */
   __timePickerChanged() {
     const defaultTimePicker = this.shadowRoot.querySelector('[part="time"]');
-    const assignedElements = this.$.timeSlot.assignedNodes({flatten: true}).filter(this.__filterElements);
+    const assignedElements = this.$.timeSlot.assignedNodes({ flatten: true }).filter(this.__filterElements);
     const timePicker = assignedElements[0];
     if (this.__timePicker === timePicker) {
       return;
@@ -562,13 +577,13 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
       const isMinMaxSameDay = dateEquals(this.__minDateTime, this.__maxDateTime);
       const oldTimeValue = this.__timePicker.value;
 
-      if (this.__minDateTime && dateEquals(selectedDate, this.__minDateTime) || isMinMaxSameDay) {
+      if ((this.__minDateTime && dateEquals(selectedDate, this.__minDateTime)) || isMinMaxSameDay) {
         this.__timePicker.min = this.__dateToIsoTimeString(this.__minDateTime);
       } else {
         this.__timePicker.min = this.__defaultTimeMinValue;
       }
 
-      if (this.__maxDateTime && dateEquals(selectedDate, this.__maxDateTime) || isMinMaxSameDay) {
+      if ((this.__maxDateTime && dateEquals(selectedDate, this.__maxDateTime)) || isMinMaxSameDay) {
         this.__timePicker.max = this.__dateToIsoTimeString(this.__maxDateTime);
       } else {
         this.__timePicker.max = this.__defaultTimeMaxValue;
@@ -625,7 +640,7 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
   /** @private */
   __triggerCustomFieldValueUpdate() {
     if (this.__timePicker) {
-      this.__timePicker.dispatchEvent(new CustomEvent('change', {bubbles: true}));
+      this.__timePicker.dispatchEvent(new CustomEvent('change', { bubbles: true }));
     }
   }
 
@@ -782,12 +797,14 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
    * @private
    */
   __dateToIsoTimeString(date) {
-    return this.__formatTimeISO(this.__validateTime({
-      hours: date.getHours(),
-      minutes: date.getMinutes(),
-      seconds: date.getSeconds(),
-      milliseconds: date.getMilliseconds()
-    }));
+    return this.__formatTimeISO(
+      this.__validateTime({
+        hours: date.getHours(),
+        minutes: date.getMinutes(),
+        seconds: date.getSeconds(),
+        milliseconds: date.getMilliseconds()
+      })
+    );
   }
 
   /**
@@ -819,9 +836,8 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
    * @return {boolean}
    */
   checkValidity() {
-    const hasInvalidFields = this.$.customField.inputs
-      .filter(input => !(input.checkValidity).call(input)).length > 0;
-    const hasEmptyFields = this.required && this.$.customField.inputs.filter(el => !el.value).length > 0;
+    const hasInvalidFields = this.$.customField.inputs.filter((input) => !input.checkValidity.call(input)).length > 0;
+    const hasEmptyFields = this.required && this.$.customField.inputs.filter((el) => !el.value).length > 0;
 
     if (hasInvalidFields || hasEmptyFields) {
       return false;
@@ -830,8 +846,8 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
   }
 
   // Copied from vaadin-time-picker
-  /* istanbul ignore next */
   /** @private */
+  // eslint-disable-next-line getter-return
   get __stepSegment() {
     const step = this.step == undefined ? 60 : parseFloat(this.step);
     if (step % 3600 === 0) {
@@ -859,10 +875,12 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
     if (!DatePickerHelper._dateEquals(date1, date2)) {
       return false;
     }
-    return date1.getHours() === date2.getHours() &&
-    date1.getMinutes() === date2.getMinutes() &&
-    date1.getSeconds() === date2.getSeconds() &&
-    date1.getMilliseconds() === date2.getMilliseconds();
+    return (
+      date1.getHours() === date2.getHours() &&
+      date1.getMinutes() === date2.getMinutes() &&
+      date1.getSeconds() === date2.getSeconds() &&
+      date1.getMilliseconds() === date2.getMilliseconds()
+    );
   }
 
   /** @private */
@@ -874,7 +892,8 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
     }
 
     const dateTime = this.__parseDateTime(value);
-    if (!dateTime) { // Invalid date, revert to old value
+    if (!dateTime) {
+      // Invalid date, revert to old value
       this[property] = oldValue;
       return;
     }
@@ -891,12 +910,11 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
       this.__dispatchChange();
       this.validate();
     }
-
   }
 
   /** @private */
   __dispatchChange() {
-    this.dispatchEvent(new CustomEvent('change', {bubbles: true}));
+    this.dispatchEvent(new CustomEvent('change', { bubbles: true }));
   }
 
   /** @private */
