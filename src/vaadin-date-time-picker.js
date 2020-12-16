@@ -453,7 +453,7 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
   __syncI18n(target, source, props) {
     props = props || Object.keys(source.i18n);
     props.forEach(prop => {
-      if (source.i18n.hasOwnProperty(prop)) {
+      if (source.i18n && source.i18n.hasOwnProperty(prop)) {
         target.set(`i18n.${prop}`, source.i18n[prop]);
       }
     });
@@ -944,7 +944,8 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
     // happen before date picker ready() which would throw an error when date picker is trying to read
     // `this.$.input` (as a result of value change triggered by setting custom field value).
     // Workaround the problem by setting custom field value only if date picker is ready.
-    const isDatePickerReady = !!this.$.customField.inputs[0].$;
+    const inputs = this.$.customField.inputs;
+    const isDatePickerReady = Boolean(inputs && inputs[0] && inputs[0].$);
     if (isDatePickerReady) {
       const doDispatchChange = this.__doDispatchChange;
 
