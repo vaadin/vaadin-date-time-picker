@@ -18,7 +18,7 @@ let memoizedTemplate;
  *
  * See [ThemableMixin – how to apply styles for shadow parts](https://github.com/vaadin/vaadin-themable-mixin/wiki)
  *
- * @extends PolymerElement
+ * @extends HTMLElement
  */
 class DateTimePickerDatePickerElement extends DatePickerElement {
   static get is() {

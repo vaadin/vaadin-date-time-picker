@@ -27,7 +27,7 @@ registerStyles(
  *
  * See [ThemableMixin – how to apply styles for shadow parts](https://github.com/vaadin/vaadin-themable-mixin/wiki)
  *
- * @extends PolymerElement
+ * @extends HTMLElement
  */
 class DateTimePickerCustomFieldElement extends CustomFieldElement {
   static get is() {
