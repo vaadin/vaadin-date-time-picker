@@ -146,6 +146,7 @@ class DateTimePicker extends ElementMixin(ThemableMixin(PolymerElement)) {
   static get is() {
     return 'vaadin-date-time-picker';
   }
+
   static get version() {
     return '1.4.0';
   }
