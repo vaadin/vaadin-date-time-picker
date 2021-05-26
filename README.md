@@ -1,5 +1,8 @@
 # &lt;vaadin-date-time-picker&gt;
 
+> ⚠️ Starting from Vaadin 20, the source code and issues for this component are migrated to the [`vaadin/web-components`](https://github.com/vaadin/web-components/tree/master/packages/vaadin-date-time-picker) monorepository.
+> This repository contains the source code and releases of `<vaadin-date-time-picker>` for the Vaadin versions 10 to 19.
+
 [&lt;vaadin-date-time-picker&gt;](https://vaadin.com/components/vaadin-date-time-picker) is a Web Component providing a date and time selection field which includes a scrollable month calendar view, part of the [Vaadin components](https://vaadin.com/components).
 
 [Live Demo ↗](https://vaadin.com/components/vaadin-date-time-picker/html-examples)
