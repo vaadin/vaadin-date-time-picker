@@ -80,6 +80,7 @@
   });
   describe('invalid cannot be set to false', () => {
     let dateTimePicker;
+    
     beforeEach(async() => {
       dateTimePicker = fixture('date-time-picker');
       dateTimePicker._shouldSetInvalid = (invalid) => invalid;
